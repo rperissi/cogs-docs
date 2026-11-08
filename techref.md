@@ -2,7 +2,7 @@
 
 *Architecture, registers, protocol, firmware, and hardware of the CoGS card.*
 
-Describes firmware 1.41 (11/08/2026). Manual revision 33, built 2026-11-08.
+Describes firmware 1.41 (11/08/2026). Manual revision 34, built 2026-11-08.
 
 This is the complete book as one Markdown file, the same text as the HTML and PDF editions at https://a2cogs.com/docs/ (`techref.html`, and the PDF linked there). It exists for people who want to feed the book to an AI assistant or keep it beside their own code; `https://a2cogs.com/llms.txt` indexes this and the other CoGS documents. Bug reports, technical questions and corrections to info@a2cogs.com.
 
@@ -41,7 +41,8 @@ Code examples are 65816 assembly in Merlin and ca65 syntax, ORCA/C, or cc65 C, a
 | 8 | 1.20 | Shipping edition. Stream ring reserved at boot, Support Snapshot vitals, W5500 PHY autoneg and 24 MHz SPI, drive count by operating system. |
 | 9 | 1.21 | Card ID (User-Agent `id/` tag, CARD_INFO unchanged), volume read-ahead windows capped at two. |
 | 10 | 1.25 | Pre-production edition. VOL_EJECT and DIB type `$06`, fixed buffer slots for windows, prefetch, decoder and the CDA frame, CA roots served from flash, idle keep-alive reaper. |
-| 33 | 1.41 | Production edition. Two-phase remount hold, share write-protect poll (`X-CoGS-Writable`, `X-CoGS-Poll`) and share-gone dismount, read-only units report `$F4`. Recent tag byte (TR, MC, HD). Link layer poll mode (`LINK_OPEN` mode bit 7, `LINK_POLL $44`, LINKQ at register +4), wired bridge with the GS's own MAC and the mirror filter, NAT datagram and checksum fixes, W5500 SHAR re-program. Pending eject (VOL_EJECT settles on the next host call, lifted by a boot) and the slot ROM's SP_SCAN boot marker from the SmartPort unit-0 STATUS, then (1.31) from every per-unit STATUS, so a GS/OS boot clears the CDA latch and ProDOS 8's does not; ROM body 2036 bytes. Chapter 9: IP65 over CoGS, the driver, why the card is invisible to the Uthernet probe. fujinet-lib over CoGS (Chapter 9). The share's files folder (`/files/`, Appendix B). |
+| 33 | 1.39 | Production edition. Two-phase remount hold, share write-protect poll (`X-CoGS-Writable`, `X-CoGS-Poll`) and share-gone dismount, read-only units report `$F4`. Recent tag byte (TR, MC, HD). Link layer poll mode (`LINK_OPEN` mode bit 7, `LINK_POLL $44`, LINKQ at register +4), wired bridge with the GS's own MAC and the mirror filter, NAT datagram and checksum fixes, W5500 SHAR re-program. Pending eject (VOL_EJECT settles on the next host call, lifted by a boot) and the slot ROM's SP_SCAN boot marker from the SmartPort unit-0 STATUS, then (1.31) from every per-unit STATUS, so a GS/OS boot clears the CDA latch and ProDOS 8's does not; ROM body 2036 bytes. Chapter 9: IP65 over CoGS, the driver, why the card is invisible to the Uthernet probe. fujinet-lib over CoGS (Chapter 9). The share's files folder (`/files/`, Appendix B). |
+| 34 | 1.41 | The block-reply wait on a 65816 host runs with interrupts enabled from the `$Cn00` page (`LIVEW`), and why it cannot run from `$C800` (Chapters 6 and 8). An empty unit answers SmartPort `$2F` device offline, not `$27` (Chapter 6, Appendix A). A second volume of a ProDOS name already on another unit is held empty for the session (Chapter 6). Read-ahead window eviction when the pool is shared with a stream and a link queue (Chapter 6). |
 
 : Book revisions
 
@@ -1169,7 +1170,7 @@ Units are removable. An unconfigured unit reports present but offline (`$E0`) so
 
 Write-allowed (bit 6) is always set, on empty and read-only units too. GS/OS builds a unit's device characteristics once, at boot, from this byte (the code 3 status), and a unit that reported write-allowed clear then stays "not writable" for the whole session: the Finder padlocks every volume later mounted there and GS/OS refuses writes at the device level with invalid access. Read-only is signalled by the write-protect bit alone, which is what the Finder lock and the FST's write-protected error come from.
 
-Interrupts are masked for the whole of every driver call. The driver runs in the shared `$C800` window; an interrupt handler that touched another slot's `$CnXX` space or `$CFFF` mid-call would deselect the ROM under the executing code.
+Interrupts are masked for every driver call except the wait for a block reply on a 65816 host (firmware 1.41 or later). The driver runs in the shared `$C800` window; an interrupt handler that touched another slot's `$CnXX` space or `$CFFF` mid-call would deselect the ROM under the executing code. A block reply can take up to a second when the card is busy with another volume, and a GS/OS boot with the card's audio heartbeat installed needs interrupts during that time. The wait therefore runs from the slot's own `$Cn00` page, the 11-byte `LIVEW` stub at `$CnEE`: it enables interrupts, polls STATUS until the reply header is queued, masks again, and ends with `bit $CFFF` so that the `rts` back into the body re-claims `$C800` for this slot before the first body byte is fetched. The GS firmware's own interrupt exit releases `$C800` with `$CFFF` and re-selects whatever slot MSLOT names, so a wait loop in the `$C800` body would resume in another card's ROM or in the internal firmware after the first interrupt. The 6502 and ProDOS 8 paths never take the live wait. See Chapter 8, "Interrupts during a drain".
 
 ### Unit count
 
@@ -1191,7 +1192,7 @@ A ProDOS boot block then pulls the rest of the operating system through the `$Cn
 
 A VOL_READ that misses every cache costs one HTTP range request. Three mechanisms keep most reads off the network.
 
-**Read-ahead window.** A miss fetches 32 blocks (16 KB) starting at the requested block in one ranged GET, and the following sequential reads are served from that window. The window is allocated at the first fetch and freed on close. At most two mounts hold a window at once; when a third needs one, the least recently used idle window is flushed to the flash cache and released, and that mount refetches on its next miss. A window with a fetch on the wire is never taken. To a host that does not redirect, the connection is kept alive and parked between windows, so one TLS handshake serves a whole boot. A redirecting host (a CDN front) is reconnected per window because the target can change.
+**Read-ahead window.** A miss fetches 32 blocks (16 KB) starting at the requested block in one ranged GET, and the following sequential reads are served from that window. The window is allocated at the first fetch and freed on close. Windows come from a pool of five fixed buffers shared with the audio stream (two while a stream plays), the boot manifest prefetch (one) and the link layer's poll-mode inbound queue (one while a LINK_OPEN is active). When a mount needs a window and the pool is full, the least recently used idle window is flushed to the flash cache and released, and that mount refetches on its next miss. A window with a fetch on the wire is never taken; if every window is on the wire the read answers BUSY and the ROM retries. Before firmware 1.41 the eviction ran only against a fixed count of two windows, so a mount made while a stream played with a link open found no buffer and GS/OS reported it could not read the disk. To a host that does not redirect, the connection is kept alive and parked between windows, so one TLS handshake serves a whole boot. A redirecting host (a CDN front) is reconnected per window because the target can change.
 
 **Flash warm cache.** Every block fetched is also written into a persistent cache in the card's flash: 765 lines of 7 blocks (3584 bytes) in 4 KB sectors, about 2.6 MiB. A line is keyed by a hash of the URL and a content tag (the origin's ETag or Last-Modified header when it sends one, otherwise the file size). A changed image fails the tag and is refetched; a same-size replacement with no validator can serve stale lines until the cache is wiped from the card menu. The cache is read-only with respect to the network: volume writes never land in it, so flash erase count grows only with new blocks seen. Every sector is self-describing and the directory is rebuilt by scanning at power-on. A cold boot from an image whose working set is cached completes with no network reads.
 
@@ -1214,15 +1215,20 @@ Writes use the window in the other direction: the ROM maps the view, MVNs the ca
 | 0 OK | Carry clear |
 | 11 UNSUPPORTED on a write, or VOLF_RO set | `$2B` write protected |
 | Unit past the effective count | `$28` no device connected |
+| 16 VOL_NOMOUNT on a SmartPort read or write (unit has no volume) | `$2F` device offline (1.41; `$27` before) |
 | Any other nonzero result, or a timed-out wait | `$27` I/O error |
 
 : Result code mapping
+
+The `$2F` matters for Eject. When GS/OS ejects a unit the Finder re-reads block 2 of that unit once more. `$27` is a media error that the Finder retries at once and without limit, which froze the desktop with the mouse still moving while the card saw thousands of STATUS reads a second; `$2F` is what a 3.5 drive answers after an eject and the Finder settles on the first one. The GS/OS generated SmartPort driver passes the device's code through unchanged. The ProDOS block entry still returns `$27` for an empty unit.
 
 Every wait in the ROM that could block is bounded. A missing reply is an I/O error to the operating system, not a hang. A block read is retried up to eight times, each retry beginning with a flush of the card-to-host FIFO and a fresh request; the card serves the repeat from cache.
 
 ## The mount table and units
 
 The card keeps one URL per unit in flash. Unit 1 is the boot volume and is the same entry VOL_URL_SET and VOL_URL_GET address; units 2 to 8 are set with VOL_MOUNT_SET. An empty entry is an unconfigured unit.
+
+Two rules keep GS/OS from meeting two copies of one volume. The same URL is refused on a second unit by VOL_URL_SET and VOL_MOUNT_SET. From firmware 1.41 the card also learns each unit's ProDOS volume name from block 2 as the unit comes up (on the manifest prefetch that follows the mount probe, ahead of the host's own reads), and a unit whose name is already on another open unit is held empty for the session: STATUS reports it offline, reads answer VOL_NOMOUNT, and the stored URL is kept. A remount of that unit or a boot clears the hold, and the stored URL persists, so after a reboot the unit mounted first wins. This is what the same image reached by two URLs (a share and a2cogs) got through before, putting up GS/OS's "There are two disks named" dialog. The card's own menu reports a held unit and which unit has the name; a host program that mounts by URL sees only the offline unit.
 
 ## The recent-disk list
 
@@ -1461,7 +1467,7 @@ The wide window has an explicit guard for this case. A legitimate wide drain rea
 
 Two things can go wrong when an interrupt is taken between FIFO accesses.
 
-**Code running from `$C800`.** The block driver executes from the shared ROM window. An interrupt handler that reads any other slot's `$CnXX` space, or `$CFFF`, transfers the window to that slot or releases it. When the handler returns the processor fetches its next instruction from whatever now occupies `$C800`. The driver masks interrupts for the whole of every call and does not re-enable them before returning; the operating system restores its own interrupt state.
+**Code running from `$C800`.** The block driver executes from the shared ROM window. An interrupt handler that reads any other slot's `$CnXX` space, or `$CFFF`, transfers the window to that slot or releases it. When the handler returns the processor fetches its next instruction from whatever now occupies `$C800`. The driver masks interrupts for every call and does not re-enable them before returning; the operating system restores its own interrupt state. The one place interrupts are open inside a call, the 65816 wait for a block reply (firmware 1.41), runs from the slot's `$Cn00` page, which the host decodes for the slot regardless of the `$C800` state, and re-claims `$C800` with `bit $CFFF` before returning to the body. The IIGS firmware's user-interrupt exit drops `$C800` with `$CFFF` and re-selects the slot MSLOT names, and its internal-interrupt exit leaves it however the handler did, so a wait with interrupts open in the `$C800` body itself dies at the first interrupt; on iron that was the GS stopping mid-boot the moment a second unit auto-mounted during driver generation. Code of your own that must wait with interrupts enabled while the card is slow follows the same pattern: wait from `$Cn00` or from RAM, never from `$C800`.
 
 **A handler that touches the card.** A handler that pops DATA while foreground code is mid-frame steals bytes from the foreground's frame, and the foreground then waits for bytes that have already left. The rule is that one context owns the card at a time. Foreground code that performs a frame round trip while an interrupt-driven client (the background audio heartbeat) is active brackets the round trip with `sei` and `cli`; the heartbeat task itself never enables interrupts and finishes well inside its time budget.
 
@@ -2267,7 +2273,8 @@ The slot ROM translates card results into the error codes the operating system e
 |:-------------------------------------------------------|:--------------------------------|:--------------------------|
 | Card reply OK | `$00` | No error |
 | Unit number greater than the unit count | `$28` | No device connected |
-| Unit present but no image mounted | `$27`, STATUS reports offline | I/O error, no media |
+| Unit present but no image mounted, SmartPort read or write | `$2F` (1.41; `$27` before), STATUS reports offline | Device offline |
+| Unit present but no image mounted, ProDOS block entry | `$27` | I/O error |
 | Read failed after the ROM's retries | `$27` | I/O error |
 | Write to a read-only mount (card reply UNSUPPORTED) | `$2B` | Write protected |
 | Block past the end of the volume (card reply VOL_RANGE) | `$27` | I/O error |

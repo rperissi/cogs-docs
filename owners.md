@@ -2,7 +2,7 @@
 
 *Installing and using the CoGS card in an Apple II.*
 
-Describes firmware 1.41 (11/08/2026). Manual revision 33, built 2026-11-08.
+Describes firmware 1.41 (11/08/2026). Manual revision 34, built 2026-11-08.
 
 This is the complete book as one Markdown file, the same text as the HTML and PDF editions at https://a2cogs.com/docs/ (`owners.html`, and the PDF linked there). It exists for people who want to feed the book to an AI assistant or keep it beside their own code; `https://a2cogs.com/llms.txt` indexes this and the other CoGS documents. Bug reports, technical questions and corrections to info@a2cogs.com.
 
@@ -39,7 +39,8 @@ Keys you press are written as they appear on the keyboard: Return, Esc, the arro
 | 30 | 1.36 | Production edition. Changing drives from the CDA on a live desktop, the lock badge follows the share's Writable switch, a share that stops answering empties its drives. MC and HD bundle tags, MECC titles in Educate & learn. SoundSmith plays once in a queue. Marinetti on the wire with the GS's own MAC, link layer 1.3 poll mode, NAT notes. Image Manager 1.6. Shut Down keeps the drives, Finder Eject still empties one, and CoGS Config is back in the menu after Shut Down + Restart. MECC menus jump by letter and search with L. Quick power cycle, boot hotkeys on 8-bit machines. Troubleshooting: why an 8-bit program built for the Uthernet does not see the card. The Game Room chapter (Doom, Milestones). |
 | 31 | 1.38 | Link layer 1.4: streaming audio and a Marinetti connection at the same time no longer crash the GS; how to copy it onto your own disk. |
 | 32 | 1.39 | AppleSqueezer with an SD card: slot 5 stays Smart Port, startup device by choice, ASSDDriver on the streamed disks and on cogsutil. CoGS Config and EasyAccess. |
-| 33 | 1.41 | Games with their own servers (Independence, trail-net) and the FujiNet tables (5 Card Stud, Texas Hold'em, Fujitzee, Battleship, Fujirkle as CoGS builds) in the Game Room chapter. The files folder in Image Manager 1.8 and RetroWrite II's CoGS Share (Chapter 10). |
+| 33 | 1.39 | Games with their own servers (Independence, trail-net) and the FujiNet tables (5 Card Stud, Texas Hold'em, Fujitzee, Battleship, Fujirkle as CoGS builds) in the Game Room chapter. The files folder in Image Manager 1.8 and RetroWrite II's CoGS Share (Chapter 10). |
+| 34 | 1.41 | Two disks with the same name: the card holds the second one empty and Browse and Disk Drives say which drive has the name (Chapter 5). Mounting a disk while the radio plays and a network program is connected (Chapter 12). |
 
 : Manual revisions
 
@@ -464,6 +465,8 @@ The eight belong to the card, not the computer. Other disk devices (a CFFA in an
 D1 is the boot disk when the computer starts from the card. D2 through D8 are extra volumes. On a IIGS they show up on the Finder desktop once GS/OS has seen them. Mount a data disk from Browse with a digit, type a URL on Disk Drives with E, or press R on Browse (under Featured) or on Disk Drives for the last twelve disks you used. A Your Source pick lands on that list. If you later change or drop the share, picking it from Recent does not mount it. The card says the source changed or is no longer available.
 
 One disk image, one drive. The card refuses a second mount of the same URL. To move an image, select its drive on Disk Drives and press the number of the drive you want it on (firmware 1.32 or later). If that drive is taken, the two images trade places. On older firmware, eject or clear the first drive and mount it again on the other.
+
+The same disk from two places is the other case. The card compares URLs, so a copy of SYSTEM.DISK on your share and the one on a2cogs look different to it, and before firmware 1.41 both mounted and GS/OS put up "There are two disks named SYSTEM.DISK", with Eject on that dialog freezing the Finder. From 1.41 the card reads the disk's own volume name as the drive comes up and holds the second one empty for the session. Browse tells you at the pick: "Same name as drive 3:" with the disk's title, "Its volume SYSTEM.DISK is on D3.", whether the drive you picked kept its old disk or stays empty, and "Clear D3 on Disk Drives (X) first." A Disk Drives pick by URL or from Recent says "S5D5 not set: same name as S5D3." on the note row. If both names were already in the card's memory at power-on, the second drive's row shows "Same name as D3: SYSTEM.DISK (held)" when you select it. Clear the drive that has the name, or pick a different disk. A pick the card refuses is undone, so the drive keeps whatever it had before.
 
 Eject in the Finder (drag the disk to the trash, or Eject on the Disk menu) unmounts the disk image from the card. The drive goes empty on Disk Drives and in Image Manager and stays empty across a reboot, the same as pressing X on its row.
 
@@ -1099,6 +1102,8 @@ If a2cogs.com is blocked on your LAN, set **Image/Audio Source** to a local shar
 | No B on the row | That disk image is not a self-booting ProDOS volume. Mount it as data with a digit. |
 | Boot starts, then hangs | Try another title. Confirm **Card Status** still has an address. |
 | Same disk image on two drives | Clear one. The card will not mount a duplicate. |
+| Browse says "Same name as drive 3" | Another drive already holds a disk with that volume name, maybe the same image from a different source. Clear that drive (X on Disk Drives) and pick again. Firmware 1.41 or later; before that GS/OS asked you to rename one of them. |
+| GS/OS "can't read" a disk you just mounted while music plays and a network program is connected | Fixed in firmware 1.41. The card ran out of buffers with the radio, a Marinetti connection and the boot disk all holding one. Update from About / Update. On older firmware, stop the music or mount before connecting. |
 | 8-bit machine, GS title | Use the 8-bit list, or a title marked 8b. |
 | ProDOS 8 does not see a new drive | Restart from the CoGS slot. GS/OS sees live mounts. |
 | GS/OS progress bar keeps starting over, A2FPGA in the machine | Another card is answering for the CoGS slot. See the next section. |
