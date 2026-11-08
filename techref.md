@@ -2,7 +2,7 @@
 
 *Architecture, registers, protocol, firmware, and hardware of the CoGS card.*
 
-Describes firmware 1.39 (10/29/2026). Manual revision 33, built 2026-11-07.
+Describes firmware 1.41 (11/08/2026). Manual revision 33, built 2026-11-08.
 
 This is the complete book as one Markdown file, the same text as the HTML and PDF editions at https://a2cogs.com/docs/ (`techref.html`, and the PDF linked there). It exists for people who want to feed the book to an AI assistant or keep it beside their own code; `https://a2cogs.com/llms.txt` indexes this and the other CoGS documents. Bug reports, technical questions and corrections to info@a2cogs.com.
 
@@ -10,7 +10,7 @@ This is the complete book as one Markdown file, the same text as the HTML and PD
 # About This Book
 This book is the technical reference for the CoGS card. It describes the card at the level a programmer or hardware engineer needs: the bus interface and register map, the frame protocol and every command and event, the firmware's disk streaming engine, the services the card injects into a running Apple IIGS, the timing rules host code must follow, the hardware, and the emulator used to develop against the card without one in a slot.
 
-It describes firmware 1.39 (10/29/2026). Where a feature requires a minimum firmware version, the text says so. Behavior not described here is not part of the interface and may change.
+It describes firmware 1.41 (11/08/2026). Where a feature requires a minimum firmware version, the text says so. Behavior not described here is not part of the interface and may change.
 
 The *CoGS Owner's Manual* covers installing and using the card and is the right book for everyone else.
 
@@ -41,7 +41,7 @@ Code examples are 65816 assembly in Merlin and ca65 syntax, ORCA/C, or cc65 C, a
 | 8 | 1.20 | Shipping edition. Stream ring reserved at boot, Support Snapshot vitals, W5500 PHY autoneg and 24 MHz SPI, drive count by operating system. |
 | 9 | 1.21 | Card ID (User-Agent `id/` tag, CARD_INFO unchanged), volume read-ahead windows capped at two. |
 | 10 | 1.25 | Pre-production edition. VOL_EJECT and DIB type `$06`, fixed buffer slots for windows, prefetch, decoder and the CDA frame, CA roots served from flash, idle keep-alive reaper. |
-| 33 | 1.39 | Production edition. Two-phase remount hold, share write-protect poll (`X-CoGS-Writable`, `X-CoGS-Poll`) and share-gone dismount, read-only units report `$F4`. Recent tag byte (TR, MC, HD). Link layer poll mode (`LINK_OPEN` mode bit 7, `LINK_POLL $44`, LINKQ at register +4), wired bridge with the GS's own MAC and the mirror filter, NAT datagram and checksum fixes, W5500 SHAR re-program. Pending eject (VOL_EJECT settles on the next host call, lifted by a boot) and the slot ROM's SP_SCAN boot marker from the SmartPort unit-0 STATUS, then (1.31) from every per-unit STATUS, so a GS/OS boot clears the CDA latch and ProDOS 8's does not; ROM body 2036 bytes. Chapter 9: IP65 over CoGS, the driver, why the card is invisible to the Uthernet probe. fujinet-lib over CoGS (Chapter 9). The share's files folder (`/files/`, Appendix B). |
+| 33 | 1.41 | Production edition. Two-phase remount hold, share write-protect poll (`X-CoGS-Writable`, `X-CoGS-Poll`) and share-gone dismount, read-only units report `$F4`. Recent tag byte (TR, MC, HD). Link layer poll mode (`LINK_OPEN` mode bit 7, `LINK_POLL $44`, LINKQ at register +4), wired bridge with the GS's own MAC and the mirror filter, NAT datagram and checksum fixes, W5500 SHAR re-program. Pending eject (VOL_EJECT settles on the next host call, lifted by a boot) and the slot ROM's SP_SCAN boot marker from the SmartPort unit-0 STATUS, then (1.31) from every per-unit STATUS, so a GS/OS boot clears the CDA latch and ProDOS 8's does not; ROM body 2036 bytes. Chapter 9: IP65 over CoGS, the driver, why the card is invisible to the Uthernet probe. fujinet-lib over CoGS (Chapter 9). The share's files folder (`/files/`, Appendix B). |
 
 : Book revisions
 

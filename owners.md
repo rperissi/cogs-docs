@@ -2,13 +2,13 @@
 
 *Installing and using the CoGS card in an Apple II.*
 
-Describes firmware 1.39 (10/29/2026). Manual revision 33, built 2026-11-07.
+Describes firmware 1.41 (11/08/2026). Manual revision 33, built 2026-11-08.
 
 This is the complete book as one Markdown file, the same text as the HTML and PDF editions at https://a2cogs.com/docs/ (`owners.html`, and the PDF linked there). It exists for people who want to feed the book to an AI assistant or keep it beside their own code; `https://a2cogs.com/llms.txt` indexes this and the other CoGS documents. Bug reports, technical questions and corrections to info@a2cogs.com.
 
 ---
 # About This Manual
-This manual describes the CoGS card running firmware 1.39 (10/29/2026). It covers installing the card in an Apple II, joining a network, booting and browsing disk images, playing audio, viewing pictures, using the card from GS/OS, keeping the firmware current, and solving problems.
+This manual describes the CoGS card running firmware 1.41 (11/08/2026). It covers installing the card in an Apple II, joining a network, booting and browsing disk images, playing audio, viewing pictures, using the card from GS/OS, keeping the firmware current, and solving problems.
 
 It is written for anyone who owns a CoGS card. No programming knowledge is needed. Programmers who want the register map, the protocol, and the firmware internals should read the companion book, the *CoGS Technical Reference*.
 
@@ -39,7 +39,7 @@ Keys you press are written as they appear on the keyboard: Return, Esc, the arro
 | 30 | 1.36 | Production edition. Changing drives from the CDA on a live desktop, the lock badge follows the share's Writable switch, a share that stops answering empties its drives. MC and HD bundle tags, MECC titles in Educate & learn. SoundSmith plays once in a queue. Marinetti on the wire with the GS's own MAC, link layer 1.3 poll mode, NAT notes. Image Manager 1.6. Shut Down keeps the drives, Finder Eject still empties one, and CoGS Config is back in the menu after Shut Down + Restart. MECC menus jump by letter and search with L. Quick power cycle, boot hotkeys on 8-bit machines. Troubleshooting: why an 8-bit program built for the Uthernet does not see the card. The Game Room chapter (Doom, Milestones). |
 | 31 | 1.38 | Link layer 1.4: streaming audio and a Marinetti connection at the same time no longer crash the GS; how to copy it onto your own disk. |
 | 32 | 1.39 | AppleSqueezer with an SD card: slot 5 stays Smart Port, startup device by choice, ASSDDriver on the streamed disks and on cogsutil. CoGS Config and EasyAccess. |
-| 33 | 1.39 | Games with their own servers (Independence, trail-net) and the FujiNet tables (5 Card Stud, Texas Hold'em, Fujitzee, Battleship, Fujirkle as CoGS builds) in the Game Room chapter. The files folder in Image Manager 1.8 and RetroWrite II's CoGS Share (Chapter 10). |
+| 33 | 1.41 | Games with their own servers (Independence, trail-net) and the FujiNet tables (5 Card Stud, Texas Hold'em, Fujitzee, Battleship, Fujirkle as CoGS builds) in the Game Room chapter. The files folder in Image Manager 1.8 and RetroWrite II's CoGS Share (Chapter 10). |
 
 : Manual revisions
 
