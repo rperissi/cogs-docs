@@ -2,13 +2,13 @@
 
 *Installing and using the CoGS card in an Apple II.*
 
-Describes firmware 1.41 (11/08/2026). Manual revision 34, built 2026-11-08.
+Describes firmware 1.42 (11/10/2026). Manual revision 36, built 2026-11-10.
 
 This is the complete book as one Markdown file, the same text as the HTML and PDF editions at https://a2cogs.com/docs/ (`owners.html`, and the PDF linked there). It exists for people who want to feed the book to an AI assistant or keep it beside their own code; `https://a2cogs.com/llms.txt` indexes this and the other CoGS documents. Bug reports, technical questions and corrections to info@a2cogs.com.
 
 ---
 # About This Manual
-This manual describes the CoGS card running firmware 1.41 (11/08/2026). It covers installing the card in an Apple II, joining a network, booting and browsing disk images, playing audio, viewing pictures, using the card from GS/OS, keeping the firmware current, and solving problems.
+This manual describes the CoGS card running firmware 1.42 (11/10/2026). It covers installing the card in an Apple II, joining a network, booting and browsing disk images, playing audio, viewing pictures, using the card from GS/OS, keeping the firmware current, and solving problems.
 
 It is written for anyone who owns a CoGS card. No programming knowledge is needed. Programmers who want the register map, the protocol, and the firmware internals should read the companion book, the *CoGS Technical Reference*.
 
@@ -41,6 +41,8 @@ Keys you press are written as they appear on the keyboard: Return, Esc, the arro
 | 32 | 1.39 | AppleSqueezer with an SD card: slot 5 stays Smart Port, startup device by choice, ASSDDriver on the streamed disks and on cogsutil. CoGS Config and EasyAccess. |
 | 33 | 1.39 | Games with their own servers (Independence, trail-net) and the FujiNet tables (5 Card Stud, Texas Hold'em, Fujitzee, Battleship, Fujirkle as CoGS builds) in the Game Room chapter. The files folder in Image Manager 1.8 and RetroWrite II's CoGS Share (Chapter 10). |
 | 34 | 1.41 | Two disks with the same name: the card holds the second one empty and Browse and Disk Drives say which drive has the name (Chapter 5). Mounting a disk while the radio plays and a network program is connected (Chapter 12). |
+| 35 | 1.41 | ACIM, the text edition of Image Manager, for Macs from Tiger onward, Linux, a NAS and Windows (Chapter 10). |
+| 36 | 1.42 | CoGS Catalog Local R/W: the whole disk catalog downloaded to your own computer and served writable, with its own row on Browse Disks (Chapters 4, 5 and 10). Favorites on the Browse hub (Chapter 4). Image/Audio Source has four slots; C edits the fourth and X clears (Chapter 4). Image Manager 1.9 and ACIM 0.3: the log, the File Types row, and the Yours, Newer and Added marks (Chapter 10). |
 
 : Manual revisions
 
@@ -48,7 +50,7 @@ Keys you press are written as they appear on the keyboard: Return, Esc, the arro
 
 The CoGS card is a network card and a co-processor for the Apple II family. It plugs into any slot of an Apple ][+, Apple //e, or Apple IIGS, connects to your network over Wi-Fi or a wired Ethernet cable, and gives the computer three things it did not have before.
 
-**A disk library on the network.** The card appears to the Apple II as an ordinary disk drive. The disk it serves is a disk image file fetched over the network, one block at a time, from the a2cogs.com catalog of about 2,200 boot-tested titles or from a folder you share from your own computer. Your Apple II boots from it the way it boots from a floppy or hard disk. Nothing is installed on the Apple II and no storage card is needed.
+**A disk library on the network.** The card appears to the Apple II as an ordinary disk drive. The disk it serves is a disk image file fetched over the network, one block at a time, from the a2cogs.com catalog of about 2,400 boot-tested titles or from a folder you share from your own computer. Your Apple II boots from it the way it boots from a floppy or hard disk. Nothing is installed on the Apple II and no storage card is needed.
 
 **Modern internet access.** The card carries the parts of the modern internet that an Apple II cannot run itself. It performs TLS encryption, fetches pages and API responses over HTTPS, resolves names, and keeps the clock set from network time. Programs on the Apple II talk to it through a few slot registers and receive plain text.
 
@@ -298,6 +300,7 @@ Browse Disks opens on **What do you want to do?** The first letters are the keys
 |:----|:------|
 | F | Featured |
 | R | Recent (the last twelve disks you mounted or booted). Return boots, 1-8 mounts, 0 unmounts. |
+| * | Favorites (the disks you marked with * in any list) |
 | G | Play a game |
 | M | Music and art |
 | E | Educate and learn |
@@ -308,11 +311,14 @@ Browse Disks opens on **What do you want to do?** The first letters are the keys
 | 8 | 8-bit titles (IIGS only) |
 | A | All disks A to Z |
 | L | Find by name (searches the a2cogs catalog) |
+| C | CoGS Catalog Local R/W, when you have saved one (Chapter 10) |
 | Y | Your source, when you have saved one (Chapter 10) |
 
 : Browse Disks hub
 
 On an 8-bit machine the list is already limited to titles that machine can run, and the GS / 8-bit extra rows are omitted.
+
+C opens the copy of the whole catalog that Image Manager keeps on your own computer (Chapter 10). It is the same hub with the same shelves, read from your computer, and every disk on it is writable. The number on the C row is how many titles the copy holds. It reads `none` when that share has no copy yet and `?` when the share does not answer.
 
 Y opens your share's folders as categories when the share offers them (Image Manager does; Chapter 10), numbered 1 through 9, then 0, X, Z, with All A-Z and Find below. A share without folders opens as the plain A-Z list.
 
@@ -325,6 +331,14 @@ When you pick a bundled title, the card mounts the parent and the picked screen 
 ![Recent, under Featured on the hub](https://a2cogs.com/docs/img/shots/rom/14c-browse-recent.png){width=80%}
 
 On **Recent**, the title you picked comes over (ALF, not Total Replay), and so do the bundle tag (TR, MC, or HD) and B. X drops that row. A clears the list. Neither key works while that disk image (or, for A, any disk image on the list) is still mounted. Unmount with 0 first. A disk image you mounted from Your Source is on this list too. If that share is no longer the saved Image Source, Return and 1-8 say `Your source changed or no longer available.` and do not mount it.
+
+![A marked row in a list](https://a2cogs.com/docs/img/shots/rom/30-list-favorite-mark.png){width=80%}
+
+**Favorites** is the list you make yourself. In any disk list (Featured, Recent, a shelf, A to Z, Find results, Your source, the local catalog) press * on a row to add it, and * again to take it off. F does the same. A marked row has a * at its left edge, and the line above the footer says which way the key will go on the highlighted row. The * row on the hub opens the list. When it is full the line reads `Favorites is full. Remove one first.`
+
+![Favorites](https://a2cogs.com/docs/img/shots/rom/31-favorites.png){width=80%}
+
+Favorites holds up to 18 disks, A to Z, with the same Return, digit and 0 keys as any list. X takes the highlighted row off and A empties the list after a Y. Neither touches the disk. A favorite remembers where you marked it. One marked in the local catalog mounts the copy on your computer and reads `local`, one marked under Your source reads `yours`, and one marked in Browse streams from a2cogs.com. A `local` or `yours` row mounts only while that share is still the saved source, the same as on Recent. The list is kept on the card through power-off, firmware updates and Factory Reset. Requires firmware 1.42 or later.
 
 > **Note.**
 > The card will not put the same disk image on two drives. GS/OS cannot hold one volume twice. If you try, the card leaves the first mount alone and tells you which drive already has it.
@@ -349,7 +363,14 @@ A change to a mount is live for GS/OS. ProDOS 8 needs a restart from the CoGS sl
 
 ## Image/Audio Source
 
-The catalog you see in Browse comes from a2cogs.com unless you point a source at your own share. This page has three slots: disks, audio, and pictures. Each is a base URL. One Image Manager folder can fill all three. S scans the LAN for Image Manager shares and fills the slots from the one you pick. D, A, and P edit a slot by hand; C clears all three. Save a slot empty to remove Your source for it. When a share is saved, Browse grows a Y row for it, and Y opens on the share's folders when it has them.
+The catalog you see in Browse comes from a2cogs.com unless you point a source at your own share. This page has four slots: disks, audio, pictures, and CoGS Catalog Local R/W. Each is a base URL. One Image Manager share can fill all four. S scans the LAN for Image Manager shares and asks what to use the one you pick for: D, A, or P for one kind, C for the local catalog, B for disks, audio and pictures together, T for all four. D, A, P, and C edit a slot by hand, and X clears all four. Save a slot empty to remove it. When a share is saved, Browse grows a Y row for it, and Y opens on the share's folders when it has them.
+
+![Image/Audio Source with all four slots set](https://a2cogs.com/docs/img/shots/rom/32-source-four.png){width=80%}
+
+The fourth slot is the share that keeps a downloaded copy of the a2cogs.com disk catalog (Chapter 10). It can be the same share as the other three or a different one. The page shows what that share answered: a title count, or `no copy` with a line telling you to download the catalog in Image Manager first. With the slot set, Browse Disks has a C row.
+
+> **Note.**
+> Through firmware 1.41, C on this page cleared the slots. From 1.42 C edits the fourth slot and X clears.
 
 Chapter 10 lists the file types Image Manager accepts and what it converts (MP3 to PCM, JPEG to SHR, disks as-is).
 
@@ -381,7 +402,7 @@ The top line of the About page shows the card's ID, eight characters derived fro
 
 ![Factory Reset](https://a2cogs.com/docs/img/shots/rom/21-factory-reset.png){width=80%}
 
-X from the main menu, then Y to confirm. This clears saved Wi-Fi, clock prefs, boot and mount URLs, the recent-disk list, and any custom catalog URL. Browse goes back to a2cogs.com. It does not reflash the Pico and it does not change the firmware. There is no undo other than joining the network and mounting disks again.
+X from the main menu, then Y to confirm. This clears saved Wi-Fi, clock prefs, boot and mount URLs, the recent-disk list, and all four Image/Audio Source slots. Browse goes back to a2cogs.com. Favorites stay; A on the Favorites page empties that list. It does not reflash the Pico and it does not change the firmware. There is no undo other than joining the network and mounting disks again.
 
 # Disks
 
@@ -389,11 +410,13 @@ The card presents itself to the Apple II as a disk controller with several drive
 
 ## Where disk images come from
 
-Two places, both HTTP or HTTPS with range requests.
+Three places, all HTTP or HTTPS with range requests.
 
-**The a2cogs.com catalog.** Read-only, boot-tested, about 2,200 titles. Browse Disks opens on it unless you have replaced the disk source. About half the rows are disk images of their own; the other half are programs that live inside a larger collection image and are listed by name so you can find them. The marks on each row (B, 8b, TR, MC, HD) tell you which is which and what Return will do. They are explained in *Reading the catalog* below. The catalog itself and about three quarters of its disk images are served from a2cogs.com. The rest fetch from where they are published: the Total Replay rows from its GitHub releases, and a few dozen from the Asimov mirror. Those titles need a path to that host as well, which on a home connection is not a distinction you will notice.
+**The a2cogs.com catalog.** Read-only, boot-tested, about 2,400 titles. Browse Disks opens on it unless you have replaced the disk source. About half the rows are disk images of their own; the other half are programs that live inside a larger collection image and are listed by name so you can find them. The marks on each row (B, 8b, TR, MC, HD) tell you which is which and what Return will do. They are explained in *Reading the catalog* below. The catalog itself and about three quarters of its disk images are served from a2cogs.com. The rest fetch from where they are published: the Total Replay rows from its GitHub releases, and a few dozen from the Asimov mirror. Those titles need a path to that host as well, which on a home connection is not a distinction you will notice.
 
 **Your own share.** A folder on a Mac running CoGS Image Manager (Chapter 10), or any web server that can serve the disk image files and a small catalog. Those disk images appear under **Your source** (Y), sorted into your own folders when the share offers them. They can be writable.
+
+**A copy of the catalog on your own computer.** Image Manager can download the whole a2cogs.com disk catalog, about 2 GB, and serve it from your computer (Chapter 10). Browse Disks then has a **CoGS Catalog Local R/W** row (C) that opens the same hub and shelves as the catalog, read from your copy. Every disk on it is writable, so high scores, saved games and changes to a GS/OS volume stay. Requires firmware 1.42 or later.
 
 The card does not keep a copy of the whole disk image. It fetches the blocks the Apple II asks for and remembers recent ones so a warm boot of the same disk image is fast.
 
@@ -444,9 +467,9 @@ Names are the program's real title, not the folder on the disk. Defender of the 
 
 Some collection images stay single rows on purpose. Fonts, Music Library, Clip Art n Sounds and System Addons are libraries of files, not programs; mount them as a data disk and browse them in the Finder. Hyperstudio and the System Taifun boot volume are complete environments and are listed once.
 
-**GS titles and 8-bit titles.** The hub's two machine rows split the catalog by what can run it. 8-bit titles (890) run on any Apple II, including a IIGS. GS titles (1,310) need a IIGS. An Apple II Plus or //e lists only the 8-bit half, so a MECC product or a Total Replay game shows there and the GS/OS collections do not. On a IIGS everything is listed and 8b marks the 8-bit rows. The 8-bit Games collection is GS-only despite its name: the games on it are 8-bit, but the volume itself boots GS/OS, so a //e cannot start it. Total Replay is the 8-bit copy of those games.
+**GS titles and 8-bit titles.** The hub's two machine rows split the catalog by what can run it. 8-bit titles (about 1,000) run on any Apple II, including a IIGS. GS titles (about 1,460) need a IIGS. An Apple II Plus or //e lists only the 8-bit half, so a MECC product or a Total Replay game shows there and the GS/OS collections do not. On a IIGS everything is listed and 8b marks the 8-bit rows. The 8-bit Games collection is GS-only despite its name: the games on it are 8-bit, but the volume itself boots GS/OS, so a //e cannot start it. Total Replay is the 8-bit copy of those games.
 
-**Read-only.** Every catalog image is served read-only. Programs run, saves do not stick. A game that insists on writing a high score or a save file to its own disk needs a writable copy on your own share (Chapter 10). The MECC volumes on the catalog carry a one-byte patch to MECC's menu so its products start from the read-only mount. On that menu a letter jumps to the first title starting with it, the same letter again goes to the next, and L searches. Saving student records or a top-ten list still needs your own copy.
+**Read-only.** Every catalog image is served read-only. Programs run, saves do not stick. A game that insists on writing a high score or a save file to its own disk needs a writable copy: the same title from CoGS Catalog Local R/W, or a disk image on your own share (Chapter 10). The MECC volumes on the catalog carry a one-byte patch to MECC's menu so its products start from the read-only mount. On that menu a letter jumps to the first title starting with it, the same letter again goes to the next, and L searches. Saving student records or a top-ten list still needs your own copy.
 
 ## Booting a disk image
 
@@ -462,11 +485,11 @@ Most slots present eight drives, D1 through D8. Slot 3 presents four. GS/OS and 
 
 The eight belong to the card, not the computer. Other disk devices (a CFFA in another slot set to Your Card, a Floppy Emu on the disk port, the built-in drives) add their own drives on top, and GS/OS mounts them all. ProDOS 8 is the tighter one. It holds fourteen devices in total, two per slot, and places a card's third and later drives into slots that have no disk device of their own, so with several cards full of images a ProDOS 8 program may not reach every drive that GS/OS shows.
 
-D1 is the boot disk when the computer starts from the card. D2 through D8 are extra volumes. On a IIGS they show up on the Finder desktop once GS/OS has seen them. Mount a data disk from Browse with a digit, type a URL on Disk Drives with E, or press R on Browse (under Featured) or on Disk Drives for the last twelve disks you used. A Your Source pick lands on that list. If you later change or drop the share, picking it from Recent does not mount it. The card says the source changed or is no longer available.
+D1 is the boot disk when the computer starts from the card. D2 through D8 are extra volumes. On a IIGS they show up on the Finder desktop once GS/OS has seen them. Mount a data disk from Browse with a digit, type a URL on Disk Drives with E, or press R on Browse (under Featured) or on Disk Drives for the last twelve disks you used. A pick from Your source or from the local catalog lands on that list too, marked `yours` or `local`. If you later change or drop the share, picking it from Recent does not mount it. The card says the source changed or is no longer available.
 
 One disk image, one drive. The card refuses a second mount of the same URL. To move an image, select its drive on Disk Drives and press the number of the drive you want it on (firmware 1.32 or later). If that drive is taken, the two images trade places. On older firmware, eject or clear the first drive and mount it again on the other.
 
-The same disk from two places is the other case. The card compares URLs, so a copy of SYSTEM.DISK on your share and the one on a2cogs look different to it, and before firmware 1.41 both mounted and GS/OS put up "There are two disks named SYSTEM.DISK", with Eject on that dialog freezing the Finder. From 1.41 the card reads the disk's own volume name as the drive comes up and holds the second one empty for the session. Browse tells you at the pick: "Same name as drive 3:" with the disk's title, "Its volume SYSTEM.DISK is on D3.", whether the drive you picked kept its old disk or stays empty, and "Clear D3 on Disk Drives (X) first." A Disk Drives pick by URL or from Recent says "S5D5 not set: same name as S5D3." on the note row. If both names were already in the card's memory at power-on, the second drive's row shows "Same name as D3: SYSTEM.DISK (held)" when you select it. Clear the drive that has the name, or pick a different disk. A pick the card refuses is undone, so the drive keeps whatever it had before.
+The same disk from two places is the other case, and a title streamed from a2cogs beside its own copy in the local catalog is the commonest way to meet it. The card compares URLs, so a copy of SYSTEM.DISK on your share and the one on a2cogs look different to it, and before firmware 1.41 both mounted and GS/OS put up "There are two disks named SYSTEM.DISK", with Eject on that dialog freezing the Finder. From 1.41 the card reads the disk's own volume name as the drive comes up and holds the second one empty for the session. Browse tells you at the pick: "Same name as drive 3:" with the disk's title, "Its volume SYSTEM.DISK is on D3.", whether the drive you picked kept its old disk or stays empty, and "Clear D3 on Disk Drives (X) first." A Disk Drives pick by URL or from Recent says "S5D5 not set: same name as S5D3." on the note row. If both names were already in the card's memory at power-on, the second drive's row shows "Same name as D3: SYSTEM.DISK (held)" when you select it. Clear the drive that has the name, or pick a different disk. A pick the card refuses is undone, so the drive keeps whatever it had before.
 
 Eject in the Finder (drag the disk to the trash, or Eject on the Disk menu) unmounts the disk image from the card. The drive goes empty on Disk Drives and in Image Manager and stays empty across a reboot, the same as pressing X on its row.
 
@@ -495,7 +518,7 @@ Saves, high scores, and GS/OS desktop files land in the disk image file on your 
 
 Catalog disk images from a2cogs.com are read-only. The Finder may try to write a desktop database. That write does not stick, and it is harmless.
 
-A writable share accepts those writes. If you replace a disk image file on the share with another file of the same size and the same name, the card may keep serving the old blocks until you wipe its cache from the USB console (the `w` key) or power the card off long enough to lose that cache. Prefer a new name, or a new size, when you replace a file.
+A writable share accepts those writes, and so does the local catalog. The first write to a local catalog image marks it **Yours (Local)** in Image Manager, and from then on a sync leaves that file alone (Chapter 10). If you replace a disk image file on the share with another file of the same size and the same name, the card may keep serving the old blocks until you wipe its cache from the USB console (the `w` key) or power the card off long enough to lose that cache. Prefer a new name, or a new size, when you replace a file.
 
 ## Disk image formats
 
@@ -834,6 +857,8 @@ GS/OS reads a tool file only when a program asks for that tool, so the full fold
 
 The CoGS Image Manager is a program for your Mac that shares one folder, subfolders included, with the card over your local network. The folder can hold three kinds of files: disk images, audio, and pictures. Image Manager converts the modern audio and picture files so **CoGS Config** can play and show them. Disks appear under Browse Disks, tracks under Browse Audio, stills under Browse Pictures, all as **Your source**.
 
+Image Manager can also keep a copy of the whole a2cogs.com disk catalog on your computer, with every disk in it writable. That is **CoGS Catalog Local R/W**, covered later in this chapter.
+
 ![The CoGS Image Manager](https://a2cogs.com/docs/img/shots/imagemanager-iigs-theme.png){width=100%}
 
 ## Installing the Image Manager
@@ -901,6 +926,8 @@ Without ffmpeg, only `.pcm` audio is shared. Without python3 plus numpy and Pill
 
 The program builds the catalogs the card already understands. Bootable disks get a B in Browse. Writes go back into existing disk images only. **Writable** is a switch; turn it off if you do not want that.
 
+The **File Types** row at the top of the window lists what the share accepts: `.po`, `.hdv` and `.2mg` disk images in ProDOS order up to 32 MB (not `.dsk` or `.woz`), the audio types, and the picture types. The tables later in this chapter have the detail.
+
 The sidebar lists the library by kind (All, Disk Images, Audio, Pictures) and then your folders, as they are on disk. Click one to see only that part; the card always gets the whole library as one A-Z list per kind. If two disk images in different folders would show the same name, the one in the subfolder gets the folder in parentheses on the Apple II, so "Work Disk" and "Work Disk (Project 17)" stay apart. Find on the card matches folder names too.
 
 ## Your folders on the Apple II
@@ -921,7 +948,9 @@ Requires firmware 1.13 or later. Older firmware ignores the categories and Y ope
 
 Right-click a disk image for **Show in Finder** and **Snapshot**. Snapshot copies the disk image next to itself with the date and time in the name, a cheap save point before you try something on the Apple II. The small light beside each row is the drive LED: green while the card reads that file, amber while it writes.
 
-If your router renumbers the Mac, the URL the card saved stops answering. The card notices on the first fetch: it looks for the share on the LAN while it waits, and when the share turns up at a new address the page says so and Return re-points every saved slot at it. If nothing turns up (Image Manager not running, or the LAN blocks Bonjour), press S on that page to open Image/Audio Source and scan again. A DHCP reservation for the Mac avoids the question. On the Source page, D, A, and P edit the disk, audio, and picture URLs by hand, and C clears all three.
+The **log** under the file list shows each request as the card makes it: catalog pages, the disk image being read, a write, a sync. The bar above it rolls it up to a single line and back down, and the strip between the list and the log drags to resize it. Image Manager 1.9 or later.
+
+If your router renumbers the Mac, the URL the card saved stops answering. The card notices on the first fetch: it looks for the share on the LAN while it waits, and when the share turns up at a new address the page says so and Return re-points every saved slot at it. If nothing turns up (Image Manager not running, or the LAN blocks Bonjour), press S on that page to open Image/Audio Source and scan again. A DHCP reservation for the Mac avoids the question. On the Source page, D, A, P, and C edit the disk, audio, picture, and local catalog URLs by hand, and X clears all four (firmware 1.42; before that there were three slots and C cleared them).
 
 > **Note.**
 > The share is for your LAN. It is not an internet server. Keep the a2cogs.com catalog for anything you want reachable off your own network.
@@ -984,10 +1013,68 @@ Image Manager's share is SHR. HGR and DHGR stills in the a2cogs.com catalog are 
 
 1. Open the card menu (hold M at power-on) or **CoGS Config**.
 2. Press 7 for **Image/Audio Source**.
-3. Enter the URL on the Disks row, the Audio row, and the Pictures row. One URL serves all three.
+3. Press S to scan. The card lists the Image Manager shares it finds on your network. Pick yours, then B to use it for disks, audio and pictures, or T to use it for those and for CoGS Catalog Local R/W as well. To type the URL instead, press D, A, or P and enter it on that row. One URL serves all of them.
 4. Open Browse Disks, Browse Audio, or Browse Pictures and press Y. Your folders come up first; A is the whole share A-Z.
 
 The card remembers the sources across restarts. Save a row empty to remove Your source for that kind and go back to a2cogs.com only. A disk image you mounted from Y stays on Recent. After you change or clear the share, that row will not mount again until the same host is the disk source.
+
+## The CoGS catalog on your own computer
+
+**CoGS Catalog Local R/W** is a copy of the whole a2cogs.com disk catalog kept on your computer: about 2,400 titles in about 630 disk images, a little under 2 GB. The card lists it as its own row on Browse Disks with the same shelves, A to Z and Find as the streaming catalog, and every disk in it is writable. A high score stays, a saved game stays, and a GS/OS volume you rearrange stays the way you left it. The streaming catalog on a2cogs.com is unchanged and always has the read-only original.
+
+It stays apart from your library. Your own folders are still **Your source**; this is a second section in the sidebar with a folder of its own. Requires Image Manager 1.9 (or ACIM 0.3) and firmware 1.42.
+
+![CoGS Catalog Local R/W in Image Manager](https://a2cogs.com/docs/img/shots/imagemanager-local-catalog.png){width=100%}
+
+### Downloading it
+
+Click **CoGS Catalog Local R/W** in the sidebar, then **Download**. Nothing is downloaded until you ask. The copy goes into a folder named `CoGS Catalog Local` beside your library; **Change...** on that page picks another place before you start. The download takes a while on the first run and can be stopped and picked up again. **Show in Finder** opens the folder, where the disk images are ordinary `.2mg` and `.po` files in `disks`.
+
+### On the Apple II
+
+Open **Image/Audio Source** (7 in the card menu), press S to scan, pick this computer, then C for CoGS Catalog Local R/W or T for all four slots. Browse Disks then has a row for it.
+
+![The C row on Browse Disks](https://a2cogs.com/docs/img/shots/rom/33-hub-local-row.png){width=80%}
+
+C opens the same hub you know, read from your copy. Featured, the shelves, GS and 8-bit titles, A to Z and Find all work the same way, and so do Return, the digits and 0. Recent on this hub lists only what you mounted from the copy. A disk you mount from here shows `local` on the main hub's Recent and on Favorites.
+
+![The local catalog's own hub](https://a2cogs.com/docs/img/shots/rom/34-local-hub.png){width=80%}
+
+If the row's count reads `none`, that share has not downloaded the catalog yet. If it reads `?`, the share did not answer; check that Image Manager is running and sharing.
+
+A title from the local catalog and the same title streamed from a2cogs.com are two disks with one volume name, so the card will put only one of them on a drive at a time (Chapter 5).
+
+### Yours, newer, and added
+
+Image Manager marks each disk image in the copy, in the list and in the sidebar filters.
+
+| Mark | Meaning |
+|:-----|:--------|
+| none | The disk image is the same as the one on a2cogs.com. |
+| **Yours (Local)** | You wrote to it, from the Apple II or on your computer. A sync never replaces it. |
+| **Newer on a2cogs** | A Yours (Local) disk image whose original has changed on a2cogs.com since you took it. Yours is kept until you reset it. |
+| **Added (Local)** | A disk image you put in the `disks` folder yourself. It is listed and writable like the rest, and Sync, Reset and Remove leave it alone. |
+
+: Local catalog marks
+
+**Reset This Image...** takes a fresh copy of the selected disk image from a2cogs.com in place of the one you changed. With nothing selected the button reads **Reset All Yours (Local)...** and does it for every one. What you wrote to those disk images is gone after a reset, so copy the file somewhere first if you want to keep it.
+
+A `.po`, `.hdv` or `.2mg` you drop into the `disks` folder shows up within a few seconds as **Added (Local)**, in its own color, named after the file. On the card it is in A to Z and Find on the local hub.
+
+### Staying in step with a2cogs.com
+
+Image Manager syncs the copy when it opens, once a day while it is running, and when you click **Sync**. A sync fetches titles that were added to the catalog, replaces disk images that changed on a2cogs.com, and leaves every Yours (Local) and Added (Local) disk image alone. When a title is taken out of the catalog, its disk image is removed from the copy at the next sync if you never wrote to it. If you did, your disk image stays and the title stays listed until you reset it.
+
+A disk image you delete from the folder by hand is fetched again at the next sync.
+
+### Removing it
+
+**Remove Local Catalog...** deletes the whole copy from your computer, Yours (Local) disk images included, after asking twice. Disk images you added yourself stay in the folder. The streaming catalog is not affected, and you can download the copy again later.
+
+> **Warning.**
+> The local catalog is as easy to overwrite as a floppy, and Remove deletes your saves with it. Copy any Yours (Local) disk image you care about somewhere else first.
+
+The Mac app and ACIM can share one `CoGS Catalog Local` folder. Either one serves a copy the other downloaded, a mark made in one shows in the other within a few seconds, and only one of them syncs at a time.
 
 ## Writable disks
 
@@ -1004,6 +1091,22 @@ Back up the folder. A share is as easy to overwrite as a floppy.
 ## The files folder
 
 A folder named `files` inside your library is for single documents, not disk images. An Apple II program that moves one file at a time uses it. RetroWrite II's CoGS Share (the "RetroWrite II (CoGS Share)" disk in the Browse Disks catalog) is the first: Send puts the document you just saved into the folder, where the Mac sees a normal `.odt` to double-click in Pages, Word, or LibreOffice; Open lists the `.odt` files there, downloads one and opens it on the Apple II. Sending needs Writable on. The status strip shows how many files the folder holds. Files you drop there are documents, not share items, so a `.txt` or a JPEG in `files` does not appear in Browse. Image Manager 1.8 or later.
+
+## ACIM, the text edition
+
+The Mac app needs macOS 12 or later. For every other machine there is **ACIM**, the text edition: the same share as one Python program with a text screen, on the Downloads page as `cim-text`. It speaks the same protocol as the Mac app, so the card cannot tell the two apart; Browse, Your Source, Writable, the lock badge, Bonjour, the `files` folder and the eject-when-gone behaviour above all apply.
+
+It runs on a Mac from 10.4 Tiger onward (PowerPC or Intel), on Linux, a Raspberry Pi, a NAS with Python, and on Windows 10 or 11 with Python 3 installed. The zip holds **CIM Text** (an app for Macs on 10.13 or later, signed and notarized), **CIM Text.command** (older Macs), `cim-text.sh` (Linux) and `cim-text.bat` (Windows). Each one opens a terminal window and asks for your disk image folder the first time, or uses a folder named `Disk Images` placed next to it. Leopard and later Macs have Python on board; Tiger needs the 2.7 installer from python.org; Windows gets Python from python.org or the Microsoft Store.
+
+![ACIM, the text edition](https://a2cogs.com/docs/img/shots/acim-tui.png){width=100%}
+
+The screen shows the **Image Source URL** to type on the card (or press S on the card's Image Source page to find it), the folder tree with `][` on the folders the card shows as categories, the items in the selected folder with a B on the ones that boot, and a log of what the card is fetching. Keys: **Tab** between the tree and the list, arrows to move, **C** marks or unmarks a folder as a category, **P** prefixes subfolder names inside a category, **W** flips Writable, **B** starts or stops sharing, **R** rescans, **L** shows the full log, **?** help, **Q** quits.
+
+CoGS Catalog Local R/W works the same way in ACIM 0.3 or later. **M** downloads the catalog the first time and jumps to its section after that. **S** syncs, **X** resets the selected disk image or all of Yours (Local), **O** sorts by name or by status, and **D** removes the copy after asking twice. In the lists `*` is Yours (Local), `!` is Newer on a2cogs and `+` is Added (Local). `--local-dir` puts the copy in a folder you name, and `--no-auto-sync` leaves syncing to the S key. In line mode the same commands start with `m`: `m download`, `m sync`, `m list`, `m reset`, `m remove`.
+
+Disk images need nothing extra. Audio converts through ffmpeg if it is installed, or through the Mac's own `afconvert` on any Mac; pictures convert when Python 3 with Pillow and numpy is present, through the `img2shr.py` in the zip. Without those, `.pcm` and `.shr` files you already have still share as they are. Conversions are cached under `~/Library/Caches/CoGSImageManager` on a Mac, `~/.cache/cogs-image-manager` on Linux and `%LOCALAPPDATA%\CoGSImageManager\cache` on Windows, so a folder converts once.
+
+Windows Python has no curses, so ACIM runs there in a line mode: type `?` at the `cim>` prompt for the same commands as single letters. `pip install windows-curses` gives the full screen. On a NAS or a Pi that should share all the time, `--headless` runs with no screen and logs to standard output, under systemd or `screen`.
 
 ## Using another web server
 
@@ -1181,6 +1284,8 @@ These are the lines you will see most often.
 | `LL: ... = CARD IP! use another` | Marinetti and the card share one address. Change one of them. |
 | `Error 12` on play | The card ran out of a resource. Open the Support Snapshot (About, then D); its Errs line names which one. Send the photo. |
 | `Your source moved` | The Mac's address changed. Save the new URL. |
+| `No local copy on this share.` | CoGS Catalog Local R/W points at a share that has not downloaded the catalog. Download it in Image Manager (Chapter 10), then press Return to retry. |
+| `none` or `?` on the Browse Disks C row | `none`: that share has no copy of the catalog. `?`: the share did not answer; check that Image Manager is running and sharing. |
 
 : Common messages
 

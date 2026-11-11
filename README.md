@@ -17,7 +17,7 @@ Bug reports, technical questions, and corrections go to Rob at info@a2cogs.com, 
 
 > CoGS is a co-processor and network card for the Apple II (IIGS first, 8-bit Apple II too). A Raspberry Pi Pico 2 W on an Apple II slot card gives the machine Wi-Fi or wired Ethernet, TCP, TLS 1.2 with HTTPS terminated on the card, HTTP and JSON commands an 8-bit or 65816 program drives through sixteen slot registers, network disk images streamed and booted over HTTP, audio streaming, and a GS/OS desk accessory. The card talks a small frame protocol: an opcode, a two-byte length, and a payload, over two FIFOs. Site: https://a2cogs.com
 
-This file indexes the CoGS documentation in forms an assistant or a coding agent can read whole. The Technical Reference is the contract a program is written against; it is about 32,000 words and fits in one context window. The firmware is pre-release and its source is not published yet; the card's register map, protocol, commands, events and timing rules are fully documented and stable, and programs written against the Technical Reference run on every released firmware. Current firmware 1.41 (11/08/2026), manual revision 34.
+This file indexes the CoGS documentation in forms an assistant or a coding agent can read whole. The Technical Reference is the contract a program is written against; it is about 32,000 words and fits in one context window. The firmware is pre-release and its source is not published yet; the card's register map, protocol, commands, events and timing rules are fully documented and stable, and programs written against the Technical Reference run on every released firmware. Current firmware 1.42 (11/10/2026), manual revision 36.
 
 ## Documentation
 

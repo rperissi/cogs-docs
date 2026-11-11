@@ -2,7 +2,7 @@
 
 *Architecture, registers, protocol, firmware, and hardware of the CoGS card.*
 
-Describes firmware 1.41 (11/08/2026). Manual revision 34, built 2026-11-08.
+Describes firmware 1.42 (11/10/2026). Manual revision 36, built 2026-11-10.
 
 This is the complete book as one Markdown file, the same text as the HTML and PDF editions at https://a2cogs.com/docs/ (`techref.html`, and the PDF linked there). It exists for people who want to feed the book to an AI assistant or keep it beside their own code; `https://a2cogs.com/llms.txt` indexes this and the other CoGS documents. Bug reports, technical questions and corrections to info@a2cogs.com.
 
@@ -10,7 +10,7 @@ This is the complete book as one Markdown file, the same text as the HTML and PD
 # About This Book
 This book is the technical reference for the CoGS card. It describes the card at the level a programmer or hardware engineer needs: the bus interface and register map, the frame protocol and every command and event, the firmware's disk streaming engine, the services the card injects into a running Apple IIGS, the timing rules host code must follow, the hardware, and the emulator used to develop against the card without one in a slot.
 
-It describes firmware 1.41 (11/08/2026). Where a feature requires a minimum firmware version, the text says so. Behavior not described here is not part of the interface and may change.
+It describes firmware 1.42 (11/10/2026). Where a feature requires a minimum firmware version, the text says so. Behavior not described here is not part of the interface and may change.
 
 The *CoGS Owner's Manual* covers installing and using the card and is the right book for everyone else.
 
@@ -43,6 +43,8 @@ Code examples are 65816 assembly in Merlin and ca65 syntax, ORCA/C, or cc65 C, a
 | 10 | 1.25 | Pre-production edition. VOL_EJECT and DIB type `$06`, fixed buffer slots for windows, prefetch, decoder and the CDA frame, CA roots served from flash, idle keep-alive reaper. |
 | 33 | 1.39 | Production edition. Two-phase remount hold, share write-protect poll (`X-CoGS-Writable`, `X-CoGS-Poll`) and share-gone dismount, read-only units report `$F4`. Recent tag byte (TR, MC, HD). Link layer poll mode (`LINK_OPEN` mode bit 7, `LINK_POLL $44`, LINKQ at register +4), wired bridge with the GS's own MAC and the mirror filter, NAT datagram and checksum fixes, W5500 SHAR re-program. Pending eject (VOL_EJECT settles on the next host call, lifted by a boot) and the slot ROM's SP_SCAN boot marker from the SmartPort unit-0 STATUS, then (1.31) from every per-unit STATUS, so a GS/OS boot clears the CDA latch and ProDOS 8's does not; ROM body 2036 bytes. Chapter 9: IP65 over CoGS, the driver, why the card is invisible to the Uthernet probe. fujinet-lib over CoGS (Chapter 9). The share's files folder (`/files/`, Appendix B). |
 | 34 | 1.41 | The block-reply wait on a 65816 host runs with interrupts enabled from the `$Cn00` page (`LIVEW`), and why it cannot run from `$C800` (Chapters 6 and 8). An empty unit answers SmartPort `$2F` device offline, not `$27` (Chapter 6, Appendix A). A second volume of a ProDOS name already on another unit is held empty for the session (Chapter 6). Read-ahead window eviction when the pool is shared with a stream and a link queue (Chapter 6). |
+| 35 | 1.41 | ACIM, the text edition of Image Manager, in the glossary and the share protocol (Appendix B). |
+| 36 | 1.42 | Favorites in the recent-disk sector, the `CGR4` packed layout and the local source flag (Chapter 6). The fourth source slot for CoGS Catalog Local R/W (Chapter 4). The `/cogs-local/` requests of an Image Manager share and `cogslocal` in its page 1 (Appendix B). `COGS_LOC_URL` in the emulator (Chapter 12). |
 
 : Book revisions
 
@@ -888,6 +890,8 @@ Six commands store the base URLs the card's Browse pages read their catalogs fro
 
 : Catalog base URLs
 
+A fourth source, the share that keeps CoGS Catalog Local R/W (firmware 1.42), has no opcode. It is set from the card's Image/Audio Source page, by a scan pick or by typing, and stored beside the other three as a base URL of at most 95 bytes. With it set, Browse Disks has a C row that reads the catalog under `{share}cogs-local/`. Factory Reset clears all four.
+
 Appendix B gives the catalog file formats.
 
 ## Byte streams
@@ -1234,11 +1238,17 @@ Two rules keep GS/OS from meeting two copies of one volume. The same URL is refu
 
 Twelve last-used volume URLs, newest first. Browse hub R (under Featured) and Disk Drives R read the same list. Every successful VOL_URL_SET or VOL_MOUNT_SET writes it, and so does Browse Return or a digit mount. There is no opcode for the list.
 
-Each row holds a display name, the URL, a boot flag (the B mark), a your-source flag (ys), and a bundle tag: none, TR (Total Replay), MC (a MECC volume), or HD (any other collection image), firmware 1.26. Browse `recent_remember_ex` stores the catalog title, the flags and the tag it painted. The opcode path (`recent_remember`) stores the URL with boot set, ys clear and no tag, except a URL whose path looks like Total Replay is tagged TR and a MECC volume filename is tagged MC; nothing infers HD from a URL, an HD row is only ever a child row Browse remembered as one. A second remember of the same URL with no title keeps the stored name, flags and tag and moves the row to the front.
+Each row holds a display name, the URL, a boot flag (the B mark), a source (a2cogs or a typed URL, Your source, or from firmware 1.42 the local catalog), and a bundle tag: none, TR (Total Replay), MC (a MECC volume), or HD (any other collection image), firmware 1.26. Browse `recent_remember_ex` stores the catalog title, the flags and the tag it painted. The opcode path (`recent_remember`) stores the URL with boot set, ys clear and no tag, except a URL whose path looks like Total Replay is tagged TR and a MECC volume filename is tagged MC; nothing infers HD from a URL, an HD row is only ever a child row Browse remembered as one. A second remember of the same URL with no title keeps the stored name, flags and tag and moves the row to the front.
 
-The Pico keeps the list in one flash sector next to the crash log. Magic is `CGR2`, with a flags byte per slot (bit 0 boot, bit 1 TR, bit 2 ys, bit 3 MC, bit 4 HD). A leftover `CGR1` sector loads as boot set, everything else clear; rows written before 1.26 have the MC and HD bits clear until they are mounted again. The emulator writes `~/.cogs_emu_recent.json` (or `COGS_EMU_RECENT`) with `name`, `url`, `boot`, `tr`, `mc`, `hd`, and `ys` on each item. A JSON file that omits the flags loads as boot set, the rest clear. Factory Reset clears the list. The first boot after the list is empty copies the current mount table in.
+The Pico keeps the list in one flash sector next to the crash log. Magic is `CGR4`: an 8-byte header (magic, then the counts of disk, station, episode and favorite rows) followed by rows packed at their real lengths, each `{name_len, url_len, flags, name, url}`. The flags byte is bit 0 boot, bit 1 TR, bit 2 ys (Your source), bit 3 MC, bit 4 HD, bit 5 local (firmware 1.42, a row mounted from CoGS Catalog Local R/W). Older sectors still load: `CGR2` is the fixed-size layout with one flags byte per slot, and a leftover `CGR1` sector loads as boot set, everything else clear. Rows written before 1.26 have the MC and HD bits clear until they are mounted again. The emulator writes `~/.cogs_emu_recent.json` (or `COGS_EMU_RECENT`) with `name`, `url`, `boot`, `tr`, `mc`, `hd`, `ys`, and `local` on each item, and a `favorites` array of `name`, `url` and `flags`. A JSON file that omits the flags loads as boot set, the rest clear. Factory Reset clears the list and leaves the favorites. The first boot after the list is empty copies the current mount table in.
 
-On a Browse list the marks sit size (cols 26-29), then 8b or Dn (31-32), then the bundle tag (34-35), then V (37), then B (39); a row reads `800K 8b TR B`, `32M D1 MC B` or `800K HD B`. The tag follows the catalog row's `in` parent name: a parent starting `Total` paints TR, one starting `MECC` paints MC, any other parent paints HD, and a row with no `in` has no tag. The picked screen names the parent and adds `Then pick from its menu:` with the title; that hand-off keys off the parent name, not the tag. Recent paints from the stored tag, never from the hand-off marker. On Recent, X drops one row and A clears the list. Both refuse while that image (or any listed image, for A) is still mounted. A ys row mounts only when Image Source is a custom catalog whose host matches the URL. Otherwise the menu says `Your source changed or no longer available.` The check is the host string, not a live HTTP probe.
+On a Browse list the marks sit size (cols 26-29), then 8b or Dn (31-32), then the bundle tag (34-35), then V (37), then B (39); a row reads `800K 8b TR B`, `32M D1 MC B` or `800K HD B`. The tag follows the catalog row's `in` parent name: a parent starting `Total` paints TR, one starting `MECC` paints MC, any other parent paints HD, and a row with no `in` has no tag. The picked screen names the parent and adds `Then pick from its menu:` with the title; that hand-off keys off the parent name, not the tag. Recent paints from the stored tag, never from the hand-off marker. On Recent, X drops one row and A clears the list. Both refuse while that image (or any listed image, for A) is still mounted. A ys row mounts only when Image Source is a custom catalog whose host matches the URL, and a local row only when the CoGS Catalog Local R/W slot names its host. Otherwise the menu says `Your source changed or no longer available.` The check is the host string, not a live HTTP probe. Recent and Favorites rows from those two sources print `yours` or `local` in the size columns.
+
+### Favorites
+
+Firmware 1.42 keeps a second list in the same sector: up to 18 disks the user marked with `*` (or F) in any disk list, sorted A to Z by name. A row is the title, the URL of the place it was marked, and the same flags byte, so one title marked on the a2cogs catalog and again in the local catalog is two rows, and each mounts from where it was marked. The rows sit after the episode rows and header byte 7 is their count. That byte was a zero pad through 1.41, so the magic did not change and a 1.41 card reads the three recent lists from a 1.42 sector and stops there.
+
+Favorites may use at most half the sector (2,048 bytes). When the sector is full the recent lists are trimmed, oldest first, and a favorite is never dropped. A mark that does not fit is refused on the row's hint line. The rows are read from flash in place; they cost no static RAM. There is no opcode for the list.
 
 A unit is mounted on first touch: the first VOL_READ or VOL_STAT on a handle with no open volume opens the stored URL. Setting a mounted unit's URL takes effect at once. The card drops the open volume, raises the unit's disk-switched flag, and the next read mounts the new image; the ROM reports the flag in the SmartPort status byte and GS/OS remounts the volume on the running desktop.
 
@@ -2167,10 +2177,11 @@ mame64 apple2gs -sl5 cogs -nvram_directory nv -video none -sound none \
 | Variable | Effect |
 |:----------------------------------------------|:-----------------------------------------------------------|
 | `COGS_EMU_NVRAM` | Path of the card settings file |
-| `COGS_EMU_RECENT` | Path of the recent-disk list |
+| `COGS_EMU_RECENT` | Path of the recent-disk list and the favorites |
 | `COGS_EMU_FLASHCACHE` | Path of the flash cache file |
 | `COGS_VOL_URL` | Unit 1 image URL, overriding the stored one |
 | `COGS_CAT_URL`, `COGS_AUD_URL`, `COGS_PIC_URL` | Catalog base URLs, overriding the stored ones |
+| `COGS_LOC_URL` | The CoGS Catalog Local R/W share, used when the stored slot is empty |
 | `COGS_EMU_SHARES` | `Name=url;Name2=url2`, the LAN shares the Browse pages list |
 | `COGS_FORCE_LINK` | Bring the link up at power-on without a join |
 | `COGS_EMU_JOIN_FAIL`, `COGS_EMU_JOIN_SLOW` | Make WIFI_JOIN fail or take time |
@@ -2346,6 +2357,7 @@ A disk source is a base URL ending in `/`. The card appends fixed file names to 
 | `{base}cogs-volumes-N.json` | Disk catalog, page N |
 | `{base}cogs-hub.json` | Category hub for the a2cogs catalog (fixed categories) |
 | `{base}cogs-your-hub.json` | Category hub for a share (folder categories, firmware 1.13) |
+| `{share}cogs-local/…` | The local catalog on an Image Manager share (firmware 1.42; *The local catalog* below) |
 | `{base}cogs-audio.json`, `-N.json` | Audio catalog |
 | `{base}cogs-stations.json` | Internet radio stations |
 | `{base}cogs-pictures.json`, `-N.json` | Picture catalog |
@@ -2446,7 +2458,7 @@ A server that ignores a parameter it does not know returns an unfiltered result 
 
 ## The share protocol
 
-The Image Manager and any compatible share serve the requests above from a folder, plus the files themselves:
+The Image Manager, its text edition (ACIM, `cim.py`, one Python file that passes the Mac app's contract suite byte for byte) and any compatible share serve the requests above from a folder, plus the files themselves:
 
 | Request | Response |
 |:------------------------------------------------------------|:------------------------------------------------------------|
@@ -2468,6 +2480,32 @@ The files folder (Image Manager 1.8) is a `files` subfolder of the share holding
 Entries in a share catalog carry `"source": "lan"` and `"readonly"` according to the share's writable setting.
 
 Disk image responses (GET, HEAD, and the 206 range replies) may carry two headers. `X-CoGS-Writable: 0|1` is the share's current writable setting; the card latches or clears the unit's read-only flag from it and raises disk-switched when it changes. `X-CoGS-Poll: N` asks the card to re-fetch 64 bytes of each mounted image every N seconds (2 to 60) while the bus is idle, so the header is re-read without waiting for the Apple II to touch the disk; three consecutive unanswered polls dismount the unit (Chapter 6). Shares that omit the headers are never polled. The Image Manager sends `X-CoGS-Poll: 5`. Audio and picture entries served from a share use `/audio/` and `/pictures/` paths that include the subfolder, so files with the same name in different folders do not collide.
+
+### The local catalog
+
+Image Manager 1.9 and ACIM 0.3 can hold a downloaded copy of the a2cogs disk catalog and serve it under `/cogs-local/`, apart from the share's own library. The card reads it through the fourth source slot (firmware 1.42).
+
+| Request | Response |
+|:------------------------------------------------------------|:------------------------------------------------------------|
+| `GET /cogs-volumes.json` | The share's own page 1. Its head carries `"cogslocal": N`, the number of titles in the copy, when the share has one. The card reads the count for the C row from here. |
+| `GET /cogs-local/cogs-hub.json` | The category hub in the a2cogs shape (`total`, `total8`, `totalgs`, `cats` by letter), with `"hub": "CoGS Catalog Local R/W"`. 404 when the share has no copy. |
+| `GET /cogs-local/cogs-volumes.json`, `-N.json` | The A to Z pages, 18 entries a page. |
+| `GET /cogs-local/search?q=&cat=&host=&p=` | Search and category lists, same parameters as the a2cogs search. |
+| `GET`, `HEAD`, `PUT` on `/cogs-local/disks/<file>` | A disk image of the copy, with ranges, the write rule and the `X-CoGS-Writable` and `X-CoGS-Poll` headers of any share image. |
+
+: Local catalog requests
+
+Entries carry `"source": "local"`, `"readonly"` from the share's writable setting, and the a2cogs fields (`cat`, `host`, `in`, `boot`, `cover`). `url` points at the share's own `/cogs-local/disks/` copy; `cover` still points at a2cogs.com.
+
+```json
+{ "pages": 136, "total": 2446, "next": "cogs-volumes-2.json", "volumes": [
+  { "name": "Zany Golf", "bytes": 819264, "blocks": 1600, "readonly": false,
+    "boot": true, "source": "local", "cat": "G", "host": "gs",
+    "cover": "https://a2cogs.com/pictures/Zany%20Golf.shr",
+    "url": "http://192.168.1.50:8271/cogs-local/disks/Zany%20Golf.2mg" } ] }
+```
+
+The first PUT to an image marks it as the user's in the share's record, and a sync does not replace it after that. A `.po`, `.hdv` or `.2mg` the user places in the copy's `disks` folder is listed with `host` `any`, no `cat`, and the file name as its title. The share's record of the copy is not served.
 
 Shares announce themselves on the LAN with mDNS service type `_cogs-share._tcp` on the share's port (default 8271). The service instance name is the share's display name; the TXT record carries `path=/`. The card lists discovered shares on the Browse hubs' source screens.
 
@@ -2492,6 +2530,12 @@ Catalog
 
 Recent-disk list
 :   Twelve last-used volume URLs the card keeps in flash. Browse hub R and Disk Drives R. No opcode. Chapter 6.
+
+Favorites
+:   Up to 18 disks the user marked with `*` in a disk list, kept in the recent-disk sector. Browse hub `*`. No opcode. Chapter 6.
+
+CoGS Catalog Local R/W, local catalog
+:   A copy of the a2cogs disk catalog downloaded by Image Manager or ACIM and served writable under `/cogs-local/` on that share. The card's fourth source slot and the C row on Browse Disks. Appendix B.
 
 CDA
 :   Classic desk accessory. A small IIGS program on the text screen reached with Ctrl-OpenApple-Esc. **CoGS Config** is the card's CDA; the card injects it at boot.
@@ -2524,7 +2568,7 @@ Handle
 :   A small integer naming one of eight sockets, eight mount units, or two streams.
 
 Image Manager
-:   The CoGS Image Manager, a macOS application that shares a folder of disk images, audio, and pictures as a source, and defines its categories.
+:   The CoGS Image Manager, a macOS application that shares a folder of disk images, audio, and pictures as a source, and defines its categories. ACIM, the text edition, is the same share as a Python program for other systems; the card cannot tell them apart.
 
 Injection
 :   The card's practice of placing code in the IIGS at boot: the CDA installer through the `$C800` overlays, and tool sets 219 and 226 through streams.
