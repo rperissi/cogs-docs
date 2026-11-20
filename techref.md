@@ -2,7 +2,7 @@
 
 *Architecture, registers, protocol, firmware, and hardware of the CoGS card.*
 
-Describes firmware 1.42 (11/10/2026). Manual revision 36, built 2026-11-10.
+Describes firmware 1.50 (11/20/2026). Manual revision 37, built 2026-11-20.
 
 This is the complete book as one Markdown file, the same text as the HTML and PDF editions at https://a2cogs.com/docs/ (`techref.html`, and the PDF linked there). It exists for people who want to feed the book to an AI assistant or keep it beside their own code; `https://a2cogs.com/llms.txt` indexes this and the other CoGS documents. Bug reports, technical questions and corrections to info@a2cogs.com.
 
@@ -10,7 +10,7 @@ This is the complete book as one Markdown file, the same text as the HTML and PD
 # About This Book
 This book is the technical reference for the CoGS card. It describes the card at the level a programmer or hardware engineer needs: the bus interface and register map, the frame protocol and every command and event, the firmware's disk streaming engine, the services the card injects into a running Apple IIGS, the timing rules host code must follow, the hardware, and the emulator used to develop against the card without one in a slot.
 
-It describes firmware 1.42 (11/10/2026). Where a feature requires a minimum firmware version, the text says so. Behavior not described here is not part of the interface and may change.
+It describes firmware 1.50 (11/20/2026). Where a feature requires a minimum firmware version, the text says so. Behavior not described here is not part of the interface and may change.
 
 The *CoGS Owner's Manual* covers installing and using the card and is the right book for everyone else.
 
@@ -45,6 +45,7 @@ Code examples are 65816 assembly in Merlin and ca65 syntax, ORCA/C, or cc65 C, a
 | 34 | 1.41 | The block-reply wait on a 65816 host runs with interrupts enabled from the `$Cn00` page (`LIVEW`), and why it cannot run from `$C800` (Chapters 6 and 8). An empty unit answers SmartPort `$2F` device offline, not `$27` (Chapter 6, Appendix A). A second volume of a ProDOS name already on another unit is held empty for the session (Chapter 6). Read-ahead window eviction when the pool is shared with a stream and a link queue (Chapter 6). |
 | 35 | 1.41 | ACIM, the text edition of Image Manager, in the glossary and the share protocol (Appendix B). |
 | 36 | 1.42 | Favorites in the recent-disk sector, the `CGR4` packed layout and the local source flag (Chapter 6). The fourth source slot for CoGS Catalog Local R/W (Chapter 4). The `/cogs-local/` requests of an Image Manager share and `cogslocal` in its page 1 (Appendix B). `COGS_LOC_URL` in the emulator (Chapter 12). |
+| 37 | 1.50 | CoGS Web: the `card:/e/` path and stream handle 3 belong to the browser and are not a programming interface (Appendix B). |
 
 : Book revisions
 
@@ -2313,8 +2314,11 @@ A block fetch that fails is retried by the card, and the ROM retries the request
 | `http://`, `https://` | Disk images, audio and picture files, catalog pages, HTTP requests |
 | `https://lobby.a2cogs.com/v1/...` | Game Room lobby calls (Chapter 10); plain HTTPS through the HTTP command |
 | `tool://NNN?base=XXXXXX` | Card-served tool set NNN relocated for address XXXXXX, opened on stream handle 1 (Chapter 7) |
+| `card:/e/...` | CoGS Web (firmware 1.50). The card's page engine answers on stream handle 3. See below. |
 
 : URL schemes
+
+`card:/e/` is how the CoGS Web programs ask the card for a page drawn as rows of pixels. A STREAM_OPEN on it is answered on stream handle 3, which is separate from handles 0, 1 and 2, so it does not take the audio stream's place. The requests under that path and the bytes of their replies belong to the browser and change with it. They are not a programming interface, and a program other than CoGS Web should not open the path. A card with no page engine answers the open with an error.
 
 URLs are limited to 255 bytes. Characters outside the unreserved set must be percent-encoded by the client; the card sends the path as given. Host names resolve through the DNS server from the DHCP lease. A URL with no explicit port uses 80 or 443 by scheme.
 

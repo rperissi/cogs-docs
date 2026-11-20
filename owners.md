@@ -2,13 +2,13 @@
 
 *Installing and using the CoGS card in an Apple II.*
 
-Describes firmware 1.42 (11/10/2026). Manual revision 36, built 2026-11-10.
+Describes firmware 1.50 (11/20/2026). Manual revision 37, built 2026-11-20.
 
 This is the complete book as one Markdown file, the same text as the HTML and PDF editions at https://a2cogs.com/docs/ (`owners.html`, and the PDF linked there). It exists for people who want to feed the book to an AI assistant or keep it beside their own code; `https://a2cogs.com/llms.txt` indexes this and the other CoGS documents. Bug reports, technical questions and corrections to info@a2cogs.com.
 
 ---
 # About This Manual
-This manual describes the CoGS card running firmware 1.42 (11/10/2026). It covers installing the card in an Apple II, joining a network, booting and browsing disk images, playing audio, viewing pictures, using the card from GS/OS, keeping the firmware current, and solving problems.
+This manual describes the CoGS card running firmware 1.50 (11/20/2026). It covers installing the card in an Apple II, joining a network, booting and browsing disk images, playing audio, viewing pictures, using the card from GS/OS, browsing the web, keeping the firmware current, and solving problems.
 
 It is written for anyone who owns a CoGS card. No programming knowledge is needed. Programmers who want the register map, the protocol, and the firmware internals should read the companion book, the *CoGS Technical Reference*.
 
@@ -40,9 +40,10 @@ Keys you press are written as they appear on the keyboard: Return, Esc, the arro
 | 31 | 1.38 | Link layer 1.4: streaming audio and a Marinetti connection at the same time no longer crash the GS; how to copy it onto your own disk. |
 | 32 | 1.39 | AppleSqueezer with an SD card: slot 5 stays Smart Port, startup device by choice, ASSDDriver on the streamed disks and on cogsutil. CoGS Config and EasyAccess. |
 | 33 | 1.39 | Games with their own servers (Independence, trail-net) and the FujiNet tables (5 Card Stud, Texas Hold'em, Fujitzee, Battleship, Fujirkle as CoGS builds) in the Game Room chapter. The files folder in Image Manager 1.8 and RetroWrite II's CoGS Share (Chapter 10). |
-| 34 | 1.41 | Two disks with the same name: the card holds the second one empty and Browse and Disk Drives say which drive has the name (Chapter 5). Mounting a disk while the radio plays and a network program is connected (Chapter 12). |
+| 34 | 1.41 | Two disks with the same name: the card holds the second one empty and Browse and Disk Drives say which drive has the name (Chapter 5). Mounting a disk while the radio plays and a network program is connected (Chapter 13). |
 | 35 | 1.41 | ACIM, the text edition of Image Manager, for Macs from Tiger onward, Linux, a NAS and Windows (Chapter 10). |
 | 36 | 1.42 | CoGS Catalog Local R/W: the whole disk catalog downloaded to your own computer and served writable, with its own row on Browse Disks (Chapters 4, 5 and 10). Favorites on the Browse hub (Chapter 4). Image/Audio Source has four slots; C edits the fourth and X clears (Chapter 4). Image Manager 1.9 and ACIM 0.3: the log, the File Types row, and the Yours, Newer and Added marks (Chapter 10). |
+| 37 | 1.50 | CoGS Web, a web browser for the IIGS and the IIe, has its own chapter (Chapter 11); Updating, Troubleshooting and Specifications are now Chapters 12 to 14. Updating a card on 1.31 or older in two steps (Chapter 12). How much memory a IIGS needs for disks, **CoGS Config** and the audio player (Chapters 1, 2, 5, 6, 9 and 13). |
 
 : Manual revisions
 
@@ -67,6 +68,7 @@ The board is a single slot card. The edge connector goes into the slot. The Rasp
 ## What you need
 
 - An Apple ][+, Apple //e, or Apple IIGS with a free slot. On a IIGS, any slot from 1 to 7 works. Slot 7 is a good default because nothing built into the IIGS uses it. Slot 3 works, but the card then presents four drives instead of eight. If an A2FPGA HDMI card is in the machine, use slot 5 (Chapter 3 explains why).
+- On a IIGS, enough memory for what you plan to run. The card menu and every 8-bit disk (Total Replay and the MECC volumes among them) run on any IIGS, however little memory it has. A disk that starts GS/OS needs at least 1 MB, and the audio player needs 2 MB or more. A ROM 3 has a little over 1 MB built in. A ROM 01 has 256K built in and gets the rest from a memory card. Chapter 5 lists what each kind of disk needs.
 - A Wi-Fi network on 2.4 GHz, or a wired Ethernet connection with a spare cable. The card supports both. When both are up, the card uses Ethernet. Wi-Fi joins WPA2 and WPA2/WPA3 mixed networks. A WPA3-only network will not join.
 - The name and password of your Wi-Fi network, if you are using Wi-Fi.
 
@@ -77,7 +79,7 @@ You do not need a boot disk, a storage card, an SD card, or a second computer.
 - The CoGS card, already assembled.
 - This manual, or a card pointing to it at a2cogs.com/manual.
 
-A finished card ships with firmware on it, and later versions arrive over the air from the CoGS menu. Chapter 11 covers updating, including the USB recovery flash.
+A finished card ships with firmware on it, and later versions arrive over the air from the CoGS menu. Chapter 12 covers updating, including the USB recovery flash.
 
 ## Before you install
 
@@ -139,6 +141,8 @@ If you plugged in an Ethernet cable, the card uses it in preference to Wi-Fi and
 
 That is the whole procedure. The disk image streams over the network as the program runs.
 
+On a IIGS with less than 1 MB of memory, pick an 8-bit title such as Total Replay. A disk that starts GS/OS stops with a system error on a machine that small. Chapter 5 lists what each kind of disk needs.
+
 ## 5. The next time you turn it on
 
 The disk you booted stays set as the boot disk. The next time the computer starts from the card it boots that disk without stopping at the menu. To boot something else, hold M as the computer starts, press 3, and pick again. Or hold the drive number 1 through 8 (1 through 4 on an 8-bit machine) through power-on to boot that drive.
@@ -161,9 +165,9 @@ Any slot from 1 to 7 works.
 
 On a IIGS, slot 7 is the usual choice. Nothing built into the machine uses it, and it is easy to reach. Slot 5 is also common. Slot 3 works, but the card then presents four drives instead of eight, because slot 3 is the slot ProDOS treats as a four-drive card.
 
-Some cards answer the bus for slots they are not plugged into, and CoGS cannot share a slot number with one of those. The A2FPGA (A2N20v2) HDMI card is the one we have met. Its standard firmware emulates a Super Serial Card in slot 2, a Mockingboard in slot 4, and a SuperSprite in slot 7, and it answers reads to all three from wherever it sits (slot 3 on a ROM 01). CoGS in slot 2, 4, or 7 then competes with it for every byte, and a GS/OS boot from the card restarts its progress bar over and over. With an A2FPGA in the machine, put CoGS in slot 5, 6, or 1, or flash the A2FPGA with one of its builds that leaves the slot free (MB4, SSC2, SSC2-MB4, or VIDEO-ONLY). Chapter 12 has the symptoms.
+Some cards answer the bus for slots they are not plugged into, and CoGS cannot share a slot number with one of those. The A2FPGA (A2N20v2) HDMI card is the one we have met. Its standard firmware emulates a Super Serial Card in slot 2, a Mockingboard in slot 4, and a SuperSprite in slot 7, and it answers reads to all three from wherever it sits (slot 3 on a ROM 01). CoGS in slot 2, 4, or 7 then competes with it for every byte, and a GS/OS boot from the card restarts its progress bar over and over. With an A2FPGA in the machine, put CoGS in slot 5, 6, or 1, or flash the A2FPGA with one of its builds that leaves the slot free (MB4, SSC2, SSC2-MB4, or VIDEO-ONLY). Chapter 13 has the symptoms.
 
-An AppleSqueezer with an SD card wants CoGS in any slot but 5. The IIGS's ROM Disk is a unit on the built-in slot 5 SmartPort firmware, and the Squeezer's SD boot rides on it. Setting slot 5 to **Your Card** switches that firmware off, so **Startup = ROM Disk** has nothing to boot, with CoGS in the slot or with the slot empty. Keep slot 5 on **Smart Port**, put CoGS in 7 (or 6, 4, 2, 1), and pick the startup device on purpose. **Startup = Scan** walks 7 down to 1 and finds the CoGS card before the SD, so set **Startup = ROM Disk** when the SD should boot and **Startup = the CoGS slot** when the card should. The SD partitions mount from a CoGS boot too; Chapter 12 has the driver note.
+An AppleSqueezer with an SD card wants CoGS in any slot but 5. The IIGS's ROM Disk is a unit on the built-in slot 5 SmartPort firmware, and the Squeezer's SD boot rides on it. Setting slot 5 to **Your Card** switches that firmware off, so **Startup = ROM Disk** has nothing to boot, with CoGS in the slot or with the slot empty. Keep slot 5 on **Smart Port**, put CoGS in 7 (or 6, 4, 2, 1), and pick the startup device on purpose. **Startup = Scan** walks 7 down to 1 and finds the CoGS card before the SD, so set **Startup = ROM Disk** when the SD should boot and **Startup = the CoGS slot** when the card should. The SD partitions mount from a CoGS boot too; Chapter 13 has the driver note.
 
 On a //e or ][+, slot 7 is again the usual choice. The Autostart ROM looks for a bootable disk from slot 7 down to slot 1. If you want the machine to boot from CoGS without typing a command, put the card in the highest-numbered slot that has a disk controller. If another disk card sits in a higher slot, that card wins the boot scan. You can still start CoGS with `PR#n` from BASIC, where n is the slot number.
 
@@ -223,7 +227,7 @@ On a //e or ][+, `PR#n` from BASIC opens the same menu if the card is answering.
 
 Once you are in the menu, press 8 for **Card Status**. A live card shows the slot number, the firmware version on **About / Update** (press 0), and either a Wi-Fi or Ethernet address after you join a network.
 
-If the menu never appears, work through Chapter 12, starting with the slot setting and the seating of the card.
+If the menu never appears, work through Chapter 13, starting with the slot setting and the seating of the card.
 
 # The CoGS Menu
 
@@ -394,7 +398,7 @@ O sets the offset from UTC (`-5`, `+1`, `+9:30`). A turns auto-write of the Appl
 
 ![About / Update](https://a2cogs.com/docs/img/shots/rom/19-about-update.png){width=80%}
 
-Firmware version and date, the services this card has, and the streaming faces. U opens the updater (Chapter 11). D opens the Support Snapshot, one screen with everything a support question needs: slot, host, firmware, the card's ID, link and address, clock source, uptime, memory (total free and the largest single block), pool and connection counts, and an Errs line that only appears when something has failed and names the cause. Take a photo of it and send it to info@a2cogs.com, or post it in #cogs on the Apple2Infinitum Slack.
+Firmware version and date, the services this card has, and the streaming faces. U opens the updater (Chapter 12). D opens the Support Snapshot, one screen with everything a support question needs: slot, host, firmware, the card's ID, link and address, clock source, uptime, memory (total free and the largest single block), pool and connection counts, and an Errs line that only appears when something has failed and names the cause. Take a photo of it and send it to info@a2cogs.com, or post it in #cogs on the Apple2Infinitum Slack.
 
 The top line of the About page shows the card's ID, eight characters derived from the chip inside the card. It identifies this card if you ever write in for help, and the card sends it along with its firmware version when it talks to a2cogs.com so we can see how many cards are in use and which versions are out there. Nothing else is sent, and there is no account to create.
 
@@ -479,6 +483,26 @@ The first time after you pick a new boot disk, the card may spend a few seconds 
 
 Holding a drive number through power-on boots that drive. If that drive is empty, nothing boots and the card menu opens instead, so a wrong digit costs you nothing. Holding M opens the menu. Both work the same on a //e and a ][+ as on a IIGS. The optional Boot Menu on Disk Drives (Chapter 4) lists the drives for a few seconds so you can pick without holding a key.
 
+## How much memory a IIGS needs
+
+Streaming a disk takes none of the computer's memory. The disk image stays on the network and the card hands over one block at a time. How much memory you need depends on the system and the program on the disk, the same as it would from a floppy or a hard disk.
+
+| What you run | Memory |
+|:-------------|:-------|
+| The card menu (Wi-Fi/Network, Browse Disks, Disk Drives and the rest) | Any IIGS. The menu runs from the card. |
+| 8-bit disks: Total Replay, MECC Vol1 and Vol2, 8-bit Eduware, 8-bit Creative, and rows marked 8b | Any IIGS. They run as they do on a //e. |
+| A GS game on its own disk | Whatever the game was written for. Many early titles ran in 512K. Later ones want 1 MB or more. |
+| A disk that starts GS/OS: `cogsall.2mg`, 8-bit Games, System 6.0.4 and Free Games, Communications | 1 MB at the least, which is Apple's minimum for System 6. |
+| A collection with no B, opened from the Finder | GS/OS has to be running first, so 1 MB at the least, plus what the program wants. |
+| **CoGS Config** and the CoGS Control Panel files | GS/OS at the Finder, so 1 MB at the least. |
+| The audio player (Chapter 6) | 2 MB or more. |
+
+: Memory on a IIGS
+
+A ROM 3 has a little over 1 MB on the main board. A ROM 01 has 256K on the main board, so it needs a memory card for anything that starts GS/OS. A 1 MB card brings it to 1.25 MB, which starts GS/OS and opens **CoGS Config** but is not enough for audio. A 4 MB card covers everything in this manual.
+
+On a IIGS with less than 1 MB, a disk that starts GS/OS loads for a while and then stops with a box that says `Sorry, system error $0201 occurred while loading the desk accessory ControlPanel`, or a line like it, and a Restart button. `$0201` is GS/OS reporting that it has run out of memory. The card is working and nothing is damaged. Hold M through power-on to open the card menu, then boot an 8-bit disk. The 8-bit Games collection will not help here, because that volume starts GS/OS. Total Replay has the same games and runs on any IIGS.
+
 ## Several drives at once
 
 Most slots present eight drives, D1 through D8. Slot 3 presents four. GS/OS and ProDOS 8 2.x (2.0.3 and later, including 2.4) see all eight on any Apple II. ProDOS 8 1.x sees D1 and D2.
@@ -541,6 +565,8 @@ On an Apple IIGS the card plays music and internet radio through the computer's 
 ![Browsing the audio catalog](https://a2cogs.com/docs/img/shots/gsos-cda-01-browse-audio.png){width=80%}
 
 Audio is IIGS only and needs GS/OS and the desk accessory. The Browse Audio row is not on the card's startup menu, and an 8-bit machine never shows it; it appears in **CoGS Config** after the Finder is up. Wait about ten seconds after the desktop appears, then open the Desk Accessories menu.
+
+The player needs a IIGS with 2 MB or more of memory. On a ROM 01 with a 1 MB card (1.25 MB in all) the catalog opens and Play ends with `Player failed: not enough memory.` Disks and the rest of the menu are not affected.
 
 ## Opening the player
 
@@ -789,6 +815,8 @@ The lobby does not know the rules of any game, so any two-player game can use it
 
 On an Apple IIGS running GS/OS the card is also present on the desktop. This chapter covers **CoGS Config**, the CoGS device in the Control Panels window, the CoGS Status desk accessory, and using the card as the network interface for Marinetti.
 
+Everything in this chapter needs GS/OS running, and GS/OS needs a IIGS with at least 1 MB of memory. Chapter 5 has the amounts for each kind of disk.
+
 ![The CoGS control panel](https://a2cogs.com/docs/img/shots/gsos-02-cdev.png){width=80%}
 
 ## CoGS Config
@@ -804,7 +832,7 @@ The pages inside **CoGS Config** are the same card menu as Chapter 4, plus play 
 
 ## The CoGS Control Panel device
 
-The **CoGS** CDev lives in `System:CDevs` on a boot volume. It is a file. The ready-to-boot disk `cogsall.2mg` already has it. The install kit `cogsutil.2mg` has it for copying onto your own boot disk. `Read.Me` on the kit lists the destinations. The kit's `Drivers` folder holds `ASSDDriver` for an AppleSqueezer SD card (Chapter 12).
+The **CoGS** CDev lives in `System:CDevs` on a boot volume. It is a file. The ready-to-boot disk `cogsall.2mg` already has it. The install kit `cogsutil.2mg` has it for copying onto your own boot disk. `Read.Me` on the kit lists the destinations. The kit's `Drivers` folder holds `ASSDDriver` for an AppleSqueezer SD card (Chapter 13).
 
 Open **Control Panels** from the Apple menu and choose **CoGS**. The panel is the GS/OS home for status and a few settings. You do not need it for the card to work. **CoGS Config** is enough for disks, audio, and Wi-Fi.
 
@@ -841,7 +869,7 @@ The link layer's **NAT** option puts the GS behind the card's own address instea
 
 ## The ready-to-boot disk
 
-`cogsall.2mg` from the Downloads page is a GS/OS volume with the CDev, the Status NDA, and the Marinetti link layer already in place. Boot it from the card (Browse, or a saved boot disk). The card still installs **CoGS Config** itself. You do not add a CDA file to that disk.
+`cogsall.2mg` from the Downloads page is a GS/OS volume with the CDev, the Status NDA, and the Marinetti link layer already in place. Boot it from the card (Browse, or a saved boot disk). The card still installs **CoGS Config** itself. You do not add a CDA file to that disk. `CoGS.Web`, the web browser (Chapter 11), is at the top level of the disk.
 
 It is a lean System 6.0.4 (fewer inits, fonts and desk accessories than a full install, so it boots quickly through the slot), but its `System:Tools` folder is complete. That is deliberate. The volume streams read-only, so you cannot drop a missing tool onto it the way you would on your own disk. Boot cogsall, mount another volume from Browse or **Disk Drives**, and a program on that volume finds the tool it asks for.
 
@@ -1112,6 +1140,238 @@ Windows Python has no curses, so ACIM runs there in a line mode: type `?` at the
 
 Any HTTP or HTTPS server that supports range requests can host files the card already understands (the disk images, the PCM, the SHR). The catalog shape is in the *CoGS Technical Reference*. For a folder of MP3s and JPEGs on a Mac, Image Manager is the path that does the conversion so you do not have to.
 
+# CoGS Web
+
+CoGS Web is a web browser for the Apple IIGS. It needs a CoGS card. The card fetches a page over Wi-Fi or Ethernet, reads its HTML and style sheets, lays it out with the IIGS's own fonts and draws it. The IIGS shows the result and sends back your keys and clicks.
+
+This chapter describes version 1.02 of the program. A second program runs on an Apple IIe. It is described under *On an Apple IIe* at the end of the chapter.
+
+## What you need
+
+- An Apple IIGS, ROM 01 or ROM 3, running GS/OS System 6.
+- A CoGS card with firmware 1.50 or later. If the card's firmware is older, the program says so when it starts. Chapter 12 covers updating.
+- The card joined to a network. Join one in **CoGS Config** (Ctrl-OpenApple-Esc) or in the CoGS control panel. The browser never changes the network settings.
+
+Memory is not a concern on most machines. In the emulator the program ran on a ROM 01 with 1.25 MB and on a ROM 3 with 1 MB.
+
+An accelerator is not needed. Laying out the page and decoding pictures happen on the card, so what the IIGS's speed changes is how fast a screen is copied.
+
+## Starting it
+
+Double-click **CoGS.Web** in the Finder. The program is one file. It needs no fonts and no folder of its own, so you can copy it to any disk.
+
+The card's catalog has it three ways, under Browse Disks:
+
+- **CoGS Web** is an 800K volume with the program and a Read.Me. Mount it next to your boot disk and open the program from there, or drag it to your hard disk.
+- **CoGS Boot Disk (cogsall)**, **CoGS Boot + Squeezer (cogsasq)** and **Communications** have the program at the top level.
+- **CoGS Web Boot Disk** starts the IIGS straight into the browser, with no Finder. It is under Featured as well. Q on that disk brings up the System 6 Program Launcher, where CoGS.Web can be opened again.
+
+L in Browse Disks, then `cogs web`, lists them. The same disk images can be downloaded from whatisthe2gs.com/cogs-web.
+
+The home page opens first. It has a search box, a link to an AI you can ask questions with no account, and a list of sites that are known to read well.
+
+![The home page.](https://a2cogs.com/docs/img/cogsweb/home-2.png){width=80%}
+
+## The screen
+
+The menu bar is at the top with the page's title at its right. Under it is the address bar. It has back, forward and reload buttons and the page's address. While a page loads, reload turns into stop, the bar says what the card is doing, and the field fills from the left.
+
+The page is under that, with a scroll bar at the right.
+
+**Show Address Bar** in the View menu puts the address bar away to give the page 13 more rows. It then comes down by itself while a page loads and when you click the page's title.
+
+## Getting around
+
+With the mouse:
+
+- Click a link to follow it.
+- Click the address to type a new one.
+- Click a box or button on a form to pick it.
+- Use the scroll bar's arrows, track and thumb the way any GS window works.
+
+With the keyboard:
+
+| Key | What it does |
+|---|---|
+| Space, Down | Scroll down a screen, or a few lines |
+| Up, Delete, - | Scroll back up |
+| Tab | Pick the next link or form field |
+| Shift-Tab | Pick the previous one |
+| Return | Follow the picked link, or work the picked field |
+| G | Go to an address |
+| B or [ | Back |
+| ] | Forward |
+| H | Home page |
+| R | Reload |
+| Esc | Stop a page that is loading |
+| F | Download the picked link, or this page |
+| L | Load the large pictures on this page |
+| C | Style sheets off and on |
+| T | Go round the AppleSqueezer GS Turbo pages |
+| Q | Quit |
+
+: CoGS Web keys on a IIGS
+
+Every key has a menu item, and the menu items show their Open Apple keys.
+
+![The View menu on a machine with no GS Turbo.](https://a2cogs.com/docs/img/cogsweb/menu-view.png){width=80%}
+
+You can type an address without `https://`. The History menu lists the last ten pages you opened, newest first, and keeps them between runs.
+
+## Forms
+
+Tab picks a form's boxes and buttons along with the page's links. Return on a text box lets you type into it. Return on a check box ticks it, on a list steps to its next choice, and on a button sends the form. A click does the same.
+
+![A search, with its form at the top of the results.](https://a2cogs.com/docs/img/cogsweb/duckduckgo.png){width=80%}
+
+The card keeps a site's cookies for as long as the browser is open, so a sign-in that is a plain form followed by a cookie works.
+
+## Pictures
+
+JPEG, PNG and GIF pictures are shown. On the normal 640 x 200 screen each band of a picture gets its own palette, so a photograph has many more colors than the 16 a single line allows.
+
+![NASA's Astronomy Picture of the Day on the 640 x 200 screen.](https://a2cogs.com/docs/img/cogsweb/apod.png){width=80%}
+
+A picture file over 1 MB is left out when the page loads, with its size shown in its place. Press L to load the large pictures on the page.
+
+SVG and WebP pictures are not shown. An animated GIF shows its first frame.
+
+## Downloading files
+
+A link to something that is not a page (a zip, a disk image, a ShrinkIt archive) opens a page about the file with its name and size. The links on that page do the saving:
+
+- Download the file as it is.
+- For a zip, download one of the files in it, unzipped, or all of them into a new folder.
+- For a ProDOS disk image (`.po`, `.2mg`, `.hdv`), download the files on it into a new folder. They keep their types, dates and resource forks.
+
+![The page for a zip, with what is inside it.](https://a2cogs.com/docs/img/cogsweb/zip.png){width=80%}
+
+Each choice opens the standard GS/OS save dialog, so you can pick any disk GS/OS has mounted. Esc stops a save that is running.
+
+![The save dialog. The desktop pattern is behind it while it is open.](https://a2cogs.com/docs/img/cogsweb/save.png){width=80%}
+
+F opens the same page for the picked link, or for the page you are on. That is how you save a picture or a page's HTML.
+
+Files get a ProDOS type from their name. A `.shk` is saved as a ShrinkIt archive, a `.2mg` as a disk image, a `.txt` as text.
+
+## Settings
+
+The Settings menu has:
+
+- **Style Sheets** turns a page's style sheets off when they hide what you want to read. It stays off until you turn it on again.
+- **Dark Mode** shows white text on black.
+- **Set Home Page to This Page** and **Use Default Home Page** do what they say.
+
+![Dark Mode.](https://a2cogs.com/docs/img/cogsweb/dark.png){width=80%}
+
+Settings are kept in a file named `COGSWEB.CFG` next to the program, and the History list in `COGSWEB.HIST`. On a disk that can't be written, such as one streamed from the CoGS catalog, they last until you quit and the browser tells you so.
+
+## AppleSqueezer GS Turbo
+
+With an AppleSqueezer GS Turbo (core 27 or later) the View menu has three more screens, all on the Turbo's HDMI output:
+
+- **640 x 400** has twice the rows of the normal screen.
+- **640 x 480** fills the HDMI screen.
+- **320 x 240 in 256 colors** shows pictures in colors of their own.
+
+T goes round them and back to 640 x 200. On a machine without a Turbo these three items are gray.
+
+![Wikipedia at 640 x 480.](https://a2cogs.com/docs/img/cogsweb/turbo-480-wikipedia.png){width=80%}
+
+![A photograph on the 256-color screen.](https://a2cogs.com/docs/img/cogsweb/turbo-256-apod.png){width=80%}
+
+## On an Apple IIe
+
+A second program runs on an Apple IIe. The card draws the same pages for the double hi-res screen and the IIe copies the rows it is sent. It has run on a real IIe with a composite color monitor, and on a IIGS.
+
+What it needs:
+
+- An Apple IIe with 128K, which means the extended 80-column card. It can be enhanced or not.
+- A CoGS card with firmware 1.50 or later. The program looks for the card in every slot. On a real IIe it has run with the card in slot 7, and in the emulator in slots 1 to 5 and 7.
+- The card joined to a network. `COGS.SYSTEM` on the same disk is the card's console, and joining is done there.
+
+The disk is **CoGS Web IIe** in the card's catalog, a 140K ProDOS disk that starts the browser when it boots. From another ProDOS disk, run `COGSWEB.SYSTEM` with the file `COGSWEB` beside it. A IIe with the card in slot 7 boots the disk straight from the card, with no floppy.
+
+![The home page on a color monitor.](https://a2cogs.com/docs/img/cogsweb/iie-home-3.png){width=80%}
+
+There are no menus and no mouse. The top line has the keys for forward, back and reload (`F/B  R`), the page's address, how far down the page you are, and a `?` as a reminder of the key that lists the keys. Messages, and anything you type, use four lines of text at the foot of the screen.
+
+| Key | What it does |
+|---|---|
+| Space | The next screen |
+| Delete or U | The screen before |
+| Down, Up | A few lines down or up |
+| Tab, N or Right | Pick the next link or form field |
+| P | Pick the one before |
+| Return | Follow the picked link, or work the picked field |
+| G | Type an address, or words to search for |
+| Left or B | Back |
+| F or ] | Forward |
+| H or Esc | Home page |
+| R | Reload |
+| L | Load the large pictures on this page |
+| C | Style sheets off and on |
+| I | About the file a link leads to |
+| W | Wide text or small text |
+| M | Pictures in color or in black and white |
+| D | Dark page or light |
+| ? | List the keys |
+| Q | Quit |
+
+: CoGS Web keys on a IIe
+
+**W** is for the monitor you have. A color monitor turns single dots into colors, so the browser starts in wide text, about 40 columns, where every pixel is two dots. On a monochrome monitor press W for small text at 560 dots across, about 80 columns. D, the dark page, gives green or amber text on black there.
+
+![Small text on a green screen, with the dark page.](https://a2cogs.com/docs/img/cogsweb/iie-green-wikipedia-3.png){width=80%}
+
+**M** changes how pictures are drawn. In color the card picks every dot for the color a composite monitor makes from it and the dots beside it. In black and white the dots are placed for brightness alone, which is the one to use on a monochrome monitor. A color picture takes the card a few seconds longer.
+
+![A photograph in the 16 double hi-res colors.](https://a2cogs.com/docs/img/cogsweb/iie-apod-3.png){width=80%}
+
+![A photograph in dots on a green screen.](https://a2cogs.com/docs/img/cogsweb/iie-green-dots-3.png){width=80%}
+
+Return on a text box, or G, asks for a line at the foot of the screen. Return sends it, Esc leaves it, and Delete or the Left arrow rubs out.
+
+![Typing into a search box.](https://a2cogs.com/docs/img/cogsweb/iie-search-3.png){width=80%}
+
+The IIe program does not save files to disk. A link to a zip or a disk image opens the page about the file, and the browser says it can't save it.
+
+The same disk runs on a IIGS in its 8-bit mode. There it starts in small text with pictures in dots, which the IIGS's RGB monitor shows cleanly, and M brings the color back.
+
+## Music
+
+The CoGS card's radio and the browser both want the same memory on the card, so pages do not open while music is playing. The browser says so. Stop the music in **CoGS Config** (Chapter 6), then open the page again.
+
+## What it can't do
+
+- No JavaScript runs. A site that builds its page with scripts shows little or nothing, and the browser says the page has nothing on it until its scripts have run.
+- The card speaks TLS 1.2. Most sites still accept it. One that accepts only TLS 1.3 will not open.
+- There is no sound or video.
+- Files can't be uploaded, and pages can't be printed.
+- The IIe program has no menus, no mouse and no saving of files.
+
+Style sheets are read for what this screen can show, such as what is hidden, bold and italic, and alignment. Colors, widths and positions from a style sheet are not used, so a page reads as a column of text and pictures and not as a copy of its desktop layout.
+
+## Messages
+
+| The browser says | What to do |
+|---|---|
+| No CoGS card found in slots 1 to 7. | Check that the card's slot is set to Your Card in the Control Panel. |
+| The card is not on a network. | Join one in CoGS Config, then press R. |
+| This card's firmware has no CoGS Web. | Update the firmware from **About / Update** (Chapter 12). |
+| Music is playing. Stop the music, then open the page again. | Stop the radio in CoGS Config. |
+| The page has nothing on it until its scripts have run. | The site needs JavaScript. Try a text or lite version of it. |
+| The site answered 403 (or another number). | The site refused the request. Some sites turn away anything that is not a current desktop browser. |
+| Done, but the disk would not take COGSWEB.CFG, so it lasts until Q. | The disk is locked or streamed. Copy the program to a disk you can write. |
+| The Turbo pages need an AppleSqueezer GS Turbo (core 27). | T was pressed on a machine without one. |
+| Waiting for the card... | Shown for a few seconds when the browser is the first program after a boot, while the card finishes installing CoGS Config. |
+
+: CoGS Web messages
+
+## Sites that read well
+
+The home page lists them. Text and "lite" editions are the fastest: text.npr.org, lite.cnn.com, cbc.ca/lite, plaintextsports.com. Wikipedia, Hacker News, the Apple II sites, NASA's picture pages and DuckDuckGo's HTML search all work. Large front pages such as cnn.com and nytimes.com open, and take longer because the card has to read several megabytes to find the text.
+
 # Updating the Firmware
 
 The card's firmware can be updated from the card's own menu over the network, or by copying a file to the card over USB. This chapter covers both, and how to see which version is installed.
@@ -1135,6 +1395,8 @@ You need a live network.
 ![Firmware update list](https://a2cogs.com/docs/img/shots/rom/20-firmware-update-list.png){width=80%}
 
 Stay on that page until it tells you to restart the Apple II. A typical update is a few seconds of download and a short write. Esc cancels before the write starts.
+
+A card on firmware 1.31 or older takes 1.50 in two steps, because 1.50 is larger than the room those versions set aside for an update. Pick 1.42 in the list, let the card restart, then open the list again and pick 1.50. A card on 1.32 or later goes straight to 1.50.
 
 The in-menu list is the published builds. A bench build that is not on a2cogs.com will not appear here. Use USB for those.
 
@@ -1173,7 +1435,7 @@ This chapter lists the problems you are most likely to meet, what causes them, a
 |:-------------|:-----------|
 | IIGS starts from another slot | Set **Your Card** and **Startup Slot**. Restart. |
 | No menu when you hold M or C | Reseat the card. Confirm the slot number. Try `PR#n` on a //e. |
-| Menu appears, About shows no version | Power cycle the computer. If it stays blank, recover firmware over USB (Chapter 11). |
+| Menu appears, About shows no version | Power cycle the computer. If it stays blank, recover firmware over USB (Chapter 12). |
 | GS/OS desktop, no CoGS drives | The boot disk is not the card, or the mounts are empty. Hold M, check Disk Drives. |
 | AppleSqueezer: Startup = ROM Disk stops booting the SD | Slot 5 is set to Your Card. Set it back to Smart Port and move CoGS to another slot. See "AppleSqueezer with an SD card". |
 | AppleSqueezer: booted from CoGS, only the first SD partition shows | The boot disk needs `ASSDDriver`. The streamed disks have it since 2026-10-29; for your own disk, copy it from cogsutil. |
@@ -1182,7 +1444,7 @@ This chapter lists the problems you are most likely to meet, what causes them, a
 
 : Card not seen
 
-A finished card ships with firmware. If the Pico has been reflashed, it needs the radio build UF2 (Chapter 11) before any of the above can work.
+A finished card ships with firmware. If the Pico has been reflashed, it needs the radio build UF2 (Chapter 12) before any of the above can work.
 
 ## The card cannot join Wi-Fi
 
@@ -1208,6 +1470,7 @@ If a2cogs.com is blocked on your LAN, set **Image/Audio Source** to a local shar
 | Browse says "Same name as drive 3" | Another drive already holds a disk with that volume name, maybe the same image from a different source. Clear that drive (X on Disk Drives) and pick again. Firmware 1.41 or later; before that GS/OS asked you to rename one of them. |
 | GS/OS "can't read" a disk you just mounted while music plays and a network program is connected | Fixed in firmware 1.41. The card ran out of buffers with the radio, a Marinetti connection and the boot disk all holding one. Update from About / Update. On older firmware, stop the music or mount before connecting. |
 | 8-bit machine, GS title | Use the 8-bit list, or a title marked 8b. |
+| IIGS: `system error $0201` and a Restart button while GS/OS is starting | The computer has less memory than GS/OS needs, which is 1 MB at the least. The card is working. Hold M through power-on and boot an 8-bit disk such as Total Replay, or add a memory card. Chapter 5 lists what each kind of disk needs. |
 | ProDOS 8 does not see a new drive | Restart from the CoGS slot. GS/OS sees live mounts. |
 | GS/OS progress bar keeps starting over, A2FPGA in the machine | Another card is answering for the CoGS slot. See the next section. |
 
@@ -1282,6 +1545,7 @@ These are the lines you will see most often.
 | `Not a bootable image` | Return on a data disk. Mount it with a digit. |
 | `CoGS settings cleared` | Factory Reset finished. Firmware is unchanged. |
 | `LL: ... = CARD IP! use another` | Marinetti and the card share one address. Change one of them. |
+| `Player failed: not enough memory.` | The audio player needs a IIGS with 2 MB or more. Disks and the rest of the menu still work. |
 | `Error 12` on play | The card ran out of a resource. Open the Support Snapshot (About, then D); its Errs line names which one. Send the photo. |
 | `Your source moved` | The Mac's address changed. Save the new URL. |
 | `No local copy on this share.` | CoGS Catalog Local R/W points at a share that has not downloaded the catalog. Download it in Image Manager (Chapter 10), then press Return to retry. |
