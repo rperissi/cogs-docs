@@ -2,7 +2,7 @@
 
 *Installing and using the CoGS card in an Apple II.*
 
-Describes firmware 1.50 (11/20/2026). Manual revision 37, built 2026-11-20.
+Describes firmware 1.50 (11/20/2026). Manual revision 38, built 2026-11-20.
 
 This is the complete book as one Markdown file, the same text as the HTML and PDF editions at https://a2cogs.com/docs/ (`owners.html`, and the PDF linked there). It exists for people who want to feed the book to an AI assistant or keep it beside their own code; `https://a2cogs.com/llms.txt` indexes this and the other CoGS documents. Bug reports, technical questions and corrections to info@a2cogs.com.
 
@@ -44,6 +44,7 @@ Keys you press are written as they appear on the keyboard: Return, Esc, the arro
 | 35 | 1.41 | ACIM, the text edition of Image Manager, for Macs from Tiger onward, Linux, a NAS and Windows (Chapter 10). |
 | 36 | 1.42 | CoGS Catalog Local R/W: the whole disk catalog downloaded to your own computer and served writable, with its own row on Browse Disks (Chapters 4, 5 and 10). Favorites on the Browse hub (Chapter 4). Image/Audio Source has four slots; C edits the fourth and X clears (Chapter 4). Image Manager 1.9 and ACIM 0.3: the log, the File Types row, and the Yours, Newer and Added marks (Chapter 10). |
 | 37 | 1.50 | CoGS Web, a web browser for the IIGS and the IIe, has its own chapter (Chapter 11); Updating, Troubleshooting and Specifications are now Chapters 12 to 14. Updating a card on 1.31 or older in two steps (Chapter 12). How much memory a IIGS needs for disks, **CoGS Config** and the audio player (Chapters 1, 2, 5, 6, 9 and 13). |
+| 38 | 1.50 | CoGS Web 1.03: the arrow keys move a cursor through a typed address or text box, and on the IIGS a click in the address puts the cursor there (Chapter 11). CoGS Boot + Squeezer has CoGS Web on it (Chapter 11). |
 
 : Manual revisions
 
@@ -1144,7 +1145,7 @@ Any HTTP or HTTPS server that supports range requests can host files the card al
 
 CoGS Web is a web browser for the Apple IIGS. It needs a CoGS card. The card fetches a page over Wi-Fi or Ethernet, reads its HTML and style sheets, lays it out with the IIGS's own fonts and draws it. The IIGS shows the result and sends back your keys and clicks.
 
-This chapter describes version 1.02 of the program. A second program runs on an Apple IIe. It is described under *On an Apple IIe* at the end of the chapter.
+This chapter describes version 1.03 of the program. A second program runs on an Apple IIe. It is described under *On an Apple IIe* at the end of the chapter.
 
 ## What you need
 
@@ -1217,6 +1218,8 @@ Every key has a menu item, and the menu items show their Open Apple keys.
 ![The View menu on a machine with no GS Turbo.](https://a2cogs.com/docs/img/cogsweb/menu-view.png){width=80%}
 
 You can type an address without `https://`. The History menu lists the last ten pages you opened, newest first, and keeps them between runs.
+
+A click on the address, or G, picks the whole address. Type to replace it, or press an arrow key to keep it and change part of it. The Left and Right arrows move the cursor, Up takes it to the start and Down to the end. Delete rubs out the character before the cursor, and what you type goes in at the cursor. A second click in the address puts the cursor at the character you clicked. Ctrl-X empties the line. Esc, or a click anywhere else, leaves the address as it was. A form's text box is typed the same way.
 
 ## Forms
 
@@ -1330,9 +1333,9 @@ There are no menus and no mouse. The top line has the keys for forward, back and
 
 ![A photograph in dots on a green screen.](https://a2cogs.com/docs/img/cogsweb/iie-green-dots-3.png){width=80%}
 
-Return on a text box, or G, asks for a line at the foot of the screen. Return sends it, Esc leaves it, and Delete or the Left arrow rubs out.
+Return on a text box, or G, asks for a line at the foot of the screen. Return sends it and Esc leaves it. The Left and Right arrows move the cursor along the line, Up takes it to the start and Down to the end. Delete rubs out the character before the cursor, what you type goes in at the cursor, and Ctrl-X empties the line.
 
-![Typing into a search box.](https://a2cogs.com/docs/img/cogsweb/iie-search-3.png){width=80%}
+![Typing into a search box.](https://a2cogs.com/docs/img/cogsweb/iie-search-4.png){width=80%}
 
 The IIe program does not save files to disk. A link to a zip or a disk image opens the page about the file, and the browser says it can't save it.
 
