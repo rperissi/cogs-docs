@@ -2,7 +2,7 @@
 
 *Architecture, registers, protocol, firmware, and hardware of the CoGS card.*
 
-Describes firmware 1.50 (11/20/2026). Manual revision 38, built 2026-11-20.
+Describes firmware 1.50 (11/20/2026). Manual revision 39, built 2026-11-22.
 
 This is the complete book as one Markdown file, the same text as the HTML and PDF editions at https://a2cogs.com/docs/ (`techref.html`, and the PDF linked there). It exists for people who want to feed the book to an AI assistant or keep it beside their own code; `https://a2cogs.com/llms.txt` indexes this and the other CoGS documents. Bug reports, technical questions and corrections to info@a2cogs.com.
 
@@ -47,6 +47,7 @@ Code examples are 65816 assembly in Merlin and ca65 syntax, ORCA/C, or cc65 C, a
 | 36 | 1.42 | Favorites in the recent-disk sector, the `CGR4` packed layout and the local source flag (Chapter 6). The fourth source slot for CoGS Catalog Local R/W (Chapter 4). The `/cogs-local/` requests of an Image Manager share and `cogslocal` in its page 1 (Appendix B). `COGS_LOC_URL` in the emulator (Chapter 12). |
 | 37 | 1.50 | CoGS Web: the `card:/e/` path and stream handle 3 belong to the browser and are not a programming interface (Appendix B). |
 | 38 | 1.50 | No change to this book. Its revision number keeps step with the Owner's Manual. |
+| 39 | 1.50 | No change to this book. Its revision number keeps step with the Owner's Manual. |
 
 : Book revisions
 

@@ -2,7 +2,7 @@
 
 *Installing and using the CoGS card in an Apple II.*
 
-Describes firmware 1.50 (11/20/2026). Manual revision 38, built 2026-11-20.
+Describes firmware 1.50 (11/20/2026). Manual revision 39, built 2026-11-22.
 
 This is the complete book as one Markdown file, the same text as the HTML and PDF editions at https://a2cogs.com/docs/ (`owners.html`, and the PDF linked there). It exists for people who want to feed the book to an AI assistant or keep it beside their own code; `https://a2cogs.com/llms.txt` indexes this and the other CoGS documents. Bug reports, technical questions and corrections to info@a2cogs.com.
 
@@ -45,6 +45,7 @@ Keys you press are written as they appear on the keyboard: Return, Esc, the arro
 | 36 | 1.42 | CoGS Catalog Local R/W: the whole disk catalog downloaded to your own computer and served writable, with its own row on Browse Disks (Chapters 4, 5 and 10). Favorites on the Browse hub (Chapter 4). Image/Audio Source has four slots; C edits the fourth and X clears (Chapter 4). Image Manager 1.9 and ACIM 0.3: the log, the File Types row, and the Yours, Newer and Added marks (Chapter 10). |
 | 37 | 1.50 | CoGS Web, a web browser for the IIGS and the IIe, has its own chapter (Chapter 11); Updating, Troubleshooting and Specifications are now Chapters 12 to 14. Updating a card on 1.31 or older in two steps (Chapter 12). How much memory a IIGS needs for disks, **CoGS Config** and the audio player (Chapters 1, 2, 5, 6, 9 and 13). |
 | 38 | 1.50 | CoGS Web 1.03: the arrow keys move a cursor through a typed address or text box, and on the IIGS a click in the address puts the cursor there (Chapter 11). CoGS Boot + Squeezer has CoGS Web on it (Chapter 11). |
+| 39 | 1.50 | K and J move up and down in the card's menus on an Apple ][ and a ][+, which have no Up and Down arrow keys (Chapters 2 and 4). |
 
 : Manual revisions
 
@@ -137,7 +138,7 @@ If you plugged in an Ethernet cable, the card uses it in preference to Wi-Fi and
 ## 4. Boot a disk
 
 1. Press 3 for **Browse Disks**. The card fetches the a2cogs.com catalog and asks what you want to do. Press F for Featured, G for a game, or another letter for a shelf. A is the full list A to Z. L finds by name.
-2. Move through the list with the arrow keys. Press V on an entry that shows a V to see its box art (IIGS only).
+2. Move through the list with the Up and Down arrow keys (K and J on a ][ or ][+, which have no such keys). Press V on an entry that shows a V to see its box art (IIGS only).
 3. Press Return on an entry. The card makes it the boot disk, mounts it in drive 1, and the computer boots from it.
 
 That is the whole procedure. The disk image streams over the network as the program runs.
@@ -245,6 +246,8 @@ The same menu comes up in two places, and they are not quite the same. The start
 ## Moving around
 
 Press the item's digit (or X for Factory Reset), or move with the Up and Down arrows and press Return. Esc leaves a page. From the main menu, Esc on a machine that was about to boot continues the boot.
+
+An Apple ][ and a ][+ have no Up and Down arrow keys. On those machines K moves up and J moves down, and the line at the foot of each page says K/J where it would say Up/Dn. K and J work on every machine and on every page with a list, and the Left arrow goes back the way Esc does.
 
 | Key | Opens |
 |:----|:------|
